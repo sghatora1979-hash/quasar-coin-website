@@ -1,0 +1,106 @@
+QUASAR COIN — STAGE 2 TESTNET STEPS (TEST COINS ONLY, NO VALUE)
+=============================================================
+Invite-only testnet. Localhost / trusted LAN / VPN only.
+Old pre-Stage-2 chains (50 QSR/block) are INCOMPATIBLE: use a FRESH
+data directory.
+
+IMPORTANT — WALLET + DATADIR MUST MATCH:
+The node looks for wallets INSIDE the --datadir folder
+(<datadir>/wallets/). So create the wallet with QUASAR_DATA_DIR set
+to the SAME folder, otherwise the node says "No such file".
+Windows cmd:  set QUASAR_DATA_DIR=quasar-seed
+Linux/Mac:    export QUASAR_DATA_DIR=quasar-seed
+(Use a plain folder name like quasar-seed — do NOT use ~/.quasar-seed
+on Windows, cmd does not expand ~.)
+
+PYTHON SETUP (once per machine):
+  Windows:  install Python from python.org, tick "Add python.exe to PATH"
+            then:  pip install ecdsa
+  Linux/Mac: python3 -m venv qcore-venv
+            qcore-venv/bin/pip install ecdsa
+            (then use qcore-venv/bin/python instead of python below)
+
+STEP 1 — FOUNDER WALLET (seed operator, once)
+  set QUASAR_DATA_DIR=quasar-seed
+  python quasar_cli.py new-address founder
+  -> Save the Q... address. NEVER share the wallet file / private key.
+     This address becomes the founder address for the whole testnet.
+
+STEP 2 — START THE SEED NODE (fresh chain, founder in genesis)
+  python quasar_cli.py start-node --port 9333 --datadir quasar-seed --founder <FOUNDER-ADDRESS-FROM-STEP-1>
+  -> The genesis block commits to the founder address. Every peer that
+     syncs from this seed agrees on the same founder.
+  -> --founder only matters on a FRESH chain. If chain_data.json already
+     exists in the datadir, the founder comes from its genesis block.
+
+STEP 3 — FRIEND JOINS (their own machine, same network/VPN)
+  set QUASAR_DATA_DIR=quasar-node2
+  python quasar_cli.py new-address miner1
+  python quasar_cli.py start-node --port 9333 --datadir quasar-node2
+  Inside the console:
+    quasar-node:9333> add-peer <SEED-IP>:9333
+  -> The friend's node syncs the chain from the seed, including the
+     genesis block with the founder address. No --founder needed.
+  -> Seed IP: on the seed laptop, Google "what is my ip".
+     Same WiFi = direct join. From outside the home, the seed needs
+     router port-forward 9333, or everyone joins a Tailscale/VPN.
+
+STEP 4 — MINE TO WALLET (in the node console, or plain CLI)
+  Console:  quasar-node:9333> mine founder
+  CLI:      python quasar_cli.py mine founder
+  -> Each block pays the scheduled reward to the miner's
+     wallet address as a real chain balance: 50,000 QSR (phase 1),
+     25,000 (phase 2), 12,500 (phase 3), then 0.
+
+STEP 4b — AUTO-MINE (node mines by itself, recommended)
+  Console:  quasar-node:9333> mine-auto founder
+  Console:  quasar-node:9333> mine-auto founder 50   (exactly 50 blocks, then stops)
+  CLI:      python quasar_cli.py mine-auto founder 50
+  -> Mines block after block automatically, ONE BLOCK EVERY 30 SECONDS.
+     Same mining path as manual `mine`; only the pacing is new.
+  -> WHY: the difficulty retarget expects ~30s blocks. Mining blocks
+     instantly by hand makes difficulty jump +1 (16x harder) every
+     10 blocks and mining stalls. Paced 30s blocks keep difficulty
+     STABLE instead of ratcheting up.
+  -> STOP: press Ctrl+C — stops cleanly, returns to the prompt.
+     A half-mined block is never added. Mined blocks stay.
+
+UPGRADING A LIVE NODE (to get auto-mine):
+  1. In the console type: quit
+  2. Replace the .py files with the new versions (same folder).
+  3. Keep the SAME --datadir folder — chain_data.json + wallets/
+     are preserved. Do NOT delete them, no new genesis needed.
+  4. Restart with the same start-node command. The old chain loads
+     and validates; then use mine-auto.
+
+STEP 5 — CLAIM FOUNDER ALLOCATION (seed operator)
+  Console:  quasar-node:9333> claim-founder 100
+  CLI:      python quasar_cli.py claim-founder 100
+  -> The claim enters the mempool; the next mined block includes it
+     IF the amount is within the unlocked vesting at that height
+     (linear unlock over ONE WEEK = 20,160 blocks).
+  -> Over-claims, double-claims, and claims to non-founder addresses
+     are rejected by every node.
+
+STEP 6 — CHECK
+  quasar-node:9333> balance founder
+  quasar-node:9333> info          # height, difficulty, founder claimed/unlocked
+  quasar-node:9333> validate      # full chain audit
+  CLI: python quasar_cli.py balance founder | info | validate
+
+STEP 7 — SEND TEST COINS
+  quasar-node:9333> send founder <TO-ADDRESS> 10
+  (then mine a block to confirm)
+
+STOPPING: type `quit` in the console (Ctrl+C also works).
+Chain data lives in the --datadir folder (chain_data.json + wallets/).
+
+RULES (enforced by every node):
+  Flat reward only. No RAM bonus. No internet-speed factor.
+  Hashrate sets speed/share, never reward per block.
+  Combined supply never exceeds 500B (400B mining + 100B founder).
+
+TESTS:
+  python test_stage2_testnet.py    # 28 tests: schedule, claims, difficulty, sync, reorg, live P2P
+  python test_mining_prototype.py  # 41 tests: supply schedule + Stage-1 prototype
+  python test_automine.py          # 6 tests: auto-mine count, pacing, clean stop, upgrade path

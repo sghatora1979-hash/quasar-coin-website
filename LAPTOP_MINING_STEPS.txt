@@ -1,0 +1,30 @@
+QUASAR COIN - Laptop Mining Steps (Stage 1 PROTOTYPE)
+=====================================================
+IMPORTANT: This is a LOCAL test prototype. Coins are TEST coins only.
+No real value. No network yet. Testnet (Stage 2) comes next.
+The OLD 'mine' command in quasar_cli.py uses the OLD schedule -
+DO NOT use it. Use ONLY the steps below (3-phase schedule: 50k -> 25k -> 12.5k -> stop).
+
+YOUR FOUNDER ADDRESS (do this once):
+  python quasar_cli.py new-address miner1
+  -> Your Q... address is your ID. NEVER share the wallet file / private key.
+
+START MINING (Eco mode = laptop stays usable):
+  python mining_prototype.py --mine --mode eco --blocks 100000 --i-consent
+
+  - Leave the window open, laptop plugged in, lid open.
+  - When it finishes (100000 blocks), just run the same command again.
+  - Modes: eco (light) / balanced / performance (heavy).
+  - Stop anytime: press Ctrl+C.
+
+CHECK YOUR MACHINE FIRST (optional):
+  python mining_prototype.py --benchmark
+
+CHECK THE SCHEDULE:
+  python supply.py
+  python test_mining_prototype.py
+
+RULES (locked in code):
+  50,000 QSR/block x 6M blocks, then 25,000 x 2,629,800, then 12,500 x 2,629,800, then STOP. 100B founder, 1-week vesting. 500B cap.
+  Reward depends ONLY on block height - never on RAM, hashrate, or identity.
+  Hashrate (RAM/CPU) sets your SPEED/SHARE, not reward per block.

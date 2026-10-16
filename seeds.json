@@ -1,0 +1,1 @@
+{"comment":"Quasar P2P seed nodes as 'host:port'. Your own first node should listen on the first entry (default port 9333). Add friends' nodes here to join a wider network.","seeds":["127.0.0.1:9333"]}

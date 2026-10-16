@@ -1,0 +1,13 @@
+REPLACE_THIS_WITH_YOUR_SEED_ADDRESS
+# ------------------------------------------------------------
+#  QUASAR SEED NODE
+#  Sabse PEHLI line me apne seed node ka address likho. Example:
+#  203.0.113.45:9333
+#  (# se shuru lines ignore hoti hain - inhe rehne do)
+#
+#  Same WiFi ke doston ke liye: apne laptop ka local IP likho
+#    (cmd me ipconfig likho - IPv4 Address wali line)
+#  Door ke doston ke liye: apna public IP + router me port 9333 forward
+#
+#  Jiska seed.txt khaali hai, uska laptop KHUD seed node banega.
+# ------------------------------------------------------------
