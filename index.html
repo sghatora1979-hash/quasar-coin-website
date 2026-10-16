@@ -395,6 +395,8 @@ ol.steps b{color:var(--ink)}
 </section>
 
 <section id="demo3d" class="rv">
+<!-- Three.js must load BEFORE the 3D demos below -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 <span class="eyebrow eyebrow2">🎬 3D Demo</span>
 <h2 class="st">Watch how it works — in 3D</h2>
 <p class="cs">Blocks are mined, linked into the chain, and new coins fly into the wallet. <b>Demo speed</b> (real chain: one block every ~30 seconds). Drag to rotate, scroll to zoom.</p>
@@ -507,7 +509,6 @@ camera.position.set(radius*Math.sin(theta)*Math.sin(phi),radius*Math.cos(phi),ra
 camera.lookAt(0,0.4,0);renderer.render(scene,camera);})();
 })();
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 <script>
 (function(){
 "use strict";
@@ -644,6 +645,63 @@ hud();
 <details><summary>Will my laptop overheat?</summary><p>Keep it on a hard table (not on the bed), plugged in. If it gets too hot the laptop protects itself — it won't catch fire. 😊</p></details>
 <details><summary>Can I mine from my phone?</summary><p>Not yet — real mining happens with the laptop program. A mobile app is coming in phase 3.</p></details>
 </section>
+
+<section id="share" class="rv" style="text-align:center">
+<span class="eyebrow eyebrow2">📣 Share</span>
+<h2 class="st">Spread the word</h2>
+<p class="cs">Tell your friends about Quasar Coin — one tap to share.</p>
+<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:640px;margin:18px auto 0">
+  <button class="btn" style="border:none;cursor:pointer" data-share="whatsapp">💬 WhatsApp</button>
+  <button class="btn" style="border:none;cursor:pointer" data-share="telegram">✈️ Telegram</button>
+  <button class="btn" style="border:none;cursor:pointer" data-share="facebook">📘 Facebook</button>
+  <button class="btn ghost" style="cursor:pointer" data-share="instagram">📸 Instagram</button>
+  <button class="btn ghost" style="cursor:pointer" data-share="tiktok">🎵 TikTok</button>
+  <button class="btn ghost" style="cursor:pointer" data-share="youtube">▶️ YouTube</button>
+  <button class="btn ghost" style="cursor:pointer" data-share="copy">🔗 Copy Link</button>
+  <button class="btn ghost" style="cursor:pointer;display:none" id="nativeShareBtn">📤 More…</button>
+</div>
+<p id="shareNote" style="color:var(--mut);font-size:13.5px;margin-top:12px;min-height:20px"></p>
+</section>
+
+<script>
+(function(){
+  var url = window.location.href.split('#')[0];
+  var text = "Quasar Coin (QSR) — Mine it. Send it. Grow it. ⛏️";
+  var eu = encodeURIComponent(url), et = encodeURIComponent(text);
+  function note(m){ var n=document.getElementById('shareNote'); if(n) n.textContent=m; }
+  function copyLink(msg){
+    function done(){ note(msg || "✅ Link copied! Paste it anywhere."); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(done).catch(function(){ fallback(); });
+    } else fallback();
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta);
+      ta.select(); try{ document.execCommand('copy'); done(); }catch(e){ note("Copy this link: "+url); }
+      document.body.removeChild(ta);
+    }
+  }
+  var handlers={
+    whatsapp:function(){ window.open("https://wa.me/?text="+et+"%20"+eu,"_blank"); },
+    telegram:function(){ window.open("https://t.me/share/url?url="+eu+"&text="+et,"_blank"); },
+    facebook:function(){ window.open("https://www.facebook.com/sharer/sharer.php?u="+eu,"_blank"); },
+    instagram:function(){ copyLink("✅ Link copied! Paste it in your Instagram bio, story or DM."); },
+    tiktok:function(){ copyLink("✅ Link copied! Paste it in your TikTok bio or video description."); },
+    youtube:function(){ copyLink("✅ Link copied! Paste it in your YouTube video description or comment."); },
+    copy:function(){ copyLink(); }
+  };
+  document.querySelectorAll('[data-share]').forEach(function(b){
+    b.addEventListener('click',function(){ var h=handlers[b.getAttribute('data-share')]; if(h) h(); });
+  });
+  // Native share sheet on phones (WhatsApp/Instagram/etc. apps)
+  var nb=document.getElementById('nativeShareBtn');
+  if(nb && navigator.share){
+    nb.style.display='inline-block';
+    nb.addEventListener('click',function(){
+      navigator.share({title:document.title,text:text,url:url}).catch(function(){});
+    });
+  }
+})();
+</script>
 
 <footer>◉ QUASAR COIN (QSR) — Testnet<br>Test coins only. No real value.</footer>
 
