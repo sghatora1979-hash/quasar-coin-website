@@ -169,7 +169,8 @@ ol.steps b{color:var(--ink)}
 /* ---- 3D living gallery cards ---- */
 .q3dcard{perspective:1000px}
 .q3dscene{position:relative;overflow:hidden;transform-style:preserve-3d;
-  transition:transform .25s ease-out;will-change:transform}
+  will-change:transform;touch-action:pan-y;cursor:grab}
+.q3dscene:active{cursor:grabbing}
 .q3dimg{width:100%;display:block;transform:scale(1.02);
   animation:qkenburns 26s ease-in-out infinite alternate;will-change:transform}
 @keyframes qkenburns{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.14) translate(-1.5%,1.5%)}}
@@ -261,18 +262,38 @@ ol.steps b{color:var(--ink)}
 </div>
 <script>
 (function(){
-/* 3D tilt on pointer */
+/* 3D drag-to-rotate (all directions) + inertia + idle sway */
 document.querySelectorAll('.q3dcard').forEach(function(card){
-  var scene=card.querySelector('.q3dscene'),raf=null,tx=0,ty=0,cx=0,cy=0;
-  function loop(){cx+=(tx-cx)*0.12;cy+=(ty-cy)*0.12;
-    scene.style.transform='rotateY('+cx.toFixed(2)+'deg) rotateX('+cy.toFixed(2)+'deg)';
-    if(Math.abs(tx-cx)>0.02||Math.abs(ty-cy)>0.02)raf=requestAnimationFrame(loop);else raf=null;}
-  function kick(){if(!raf)raf=requestAnimationFrame(loop);}
+  var scene=card.querySelector('.q3dscene');
+  var rx=0,ry=0,trx=0,try_=0,vx=0,vy=0,dragging=false,lx=0,ly=0,lastT=0;
+  function clamp(v,a,b){return v<a?a:v>b?b:v;}
+  function loop(){
+    var now=performance.now()/1000;
+    if(!dragging){
+      trx+=vx;try_+=vy;vx*=0.93;vy*=0.93;
+      if(Math.abs(vx)<0.02)vx=0;if(Math.abs(vy)<0.02)vy=0;
+      if(now-lastT>3&&vx===0&&vy===0){trx=Math.sin(now*0.5)*7;try_=Math.cos(now*0.42)*9;}
+      trx=clamp(trx,-38,38);try_=clamp(try_,-38,38);
+    }
+    rx+=(trx-rx)*0.14;ry+=(try_-ry)*0.14;
+    scene.style.transform='rotateY('+ry.toFixed(2)+'deg) rotateX('+rx.toFixed(2)+'deg)';
+    requestAnimationFrame(loop);
+  }
+  function kick(){lastT=performance.now()/1000;}
+  card.addEventListener('pointerdown',function(e){
+    dragging=true;lx=e.clientX;ly=e.clientY;vx=vy=0;kick();
+  });
   card.addEventListener('pointermove',function(e){
-    var r=card.getBoundingClientRect();
-    tx=((e.clientX-r.left)/r.width-0.5)*14;
-    ty=-((e.clientY-r.top)/r.height-0.5)*10;kick();});
-  card.addEventListener('pointerleave',function(){tx=0;ty=0;kick();});
+    if(!dragging)return;
+    var dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;kick();
+    try_=clamp(try_+dx*0.28,-38,38);trx=clamp(trx-dy*0.22,-38,38);
+    vx=-dy*0.22;vy=dx*0.28;
+  });
+  function endDrag(){dragging=false;kick();}
+  card.addEventListener('pointerup',endDrag);
+  card.addEventListener('pointercancel',endDrag);
+  card.addEventListener('pointerleave',function(){if(dragging)endDrag();});
+  requestAnimationFrame(loop);
 });
 /* floating spark particles */
 var PALETTES={gold:['#ffd94d','#ff9a2a','#fff3c4','#9fd4ff'],galaxy:['#ffe9a8','#ffffff','#9fd4ff','#ffc46b']};
@@ -331,6 +352,20 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
 });
 })();
 </script>
+<section class="rv" style="margin-top:34px">
+<span class="eyebrow eyebrow2">🌌 The Quasar Universe</span>
+<h2 class="st">Seven windows into the cosmos</h2>
+<p class="cs">The real universe that inspired our coin — alive in 3D. Gold coins burst from each quasar's heart.</p>
+<div class="pillars" style="margin-top:16px">
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold" data-core="0.52,0.52"><img class="q3dimg" src="quasar-u1.jpg" alt="Quasar with blazing accretion disk and twin jets"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">The hungry heart — matter spiraling into the giant</p></div>
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="galaxy" data-core="0.62,0.55"><img class="q3dimg" src="quasar-u2.jpg" alt="Spiral galaxy glowing blue and pink"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">Stellar nursery — new stars ignite in spiral arms</p></div>
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="galaxy" data-core="0.5,0.48"><img class="q3dimg" src="quasar-u3.jpg" alt="Galaxy with a powerful energy jet"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">Energy jets — piercing the dark at near light-speed</p></div>
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold" data-core="0.52,0.5"><img class="q3dimg" src="quasar-u4.jpg" alt="Quasar accretion disk with blue jets"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">The accretion disk — hotter than a million suns</p></div>
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="galaxy" data-core="0.5,0.52"><img class="q3dimg" src="quasar-u5.jpg" alt="Spiral galaxy in red and blue"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">Gravity's whirlpool — a galaxy in motion</p></div>
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold" data-core="0.5,0.5"><img class="q3dimg" src="quasar-u6.jpg" alt="Black hole with glowing accretion disk"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">The point of no return — the event horizon</p></div>
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold" data-core="0.5,0.48"><img class="q3dimg" src="quasar-u7.jpg" alt="Quasar core erupting with light"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">Let there be light — the quasar ignites</p></div>
+</div>
+</section>
 <div class="card rv">
   <h3>🌟 From the cosmos to our coin</h3>
   <table class="trouble" style="width:100%;border-collapse:collapse;margin-top:10px">
@@ -349,14 +384,15 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
 <h2 class="st">Start mining in 3 steps</h2>
 <p class="cs"><b>Honest note:</b> real mining happens by running the program on your laptop — not from a website button.</p>
 <div class="card rv" style="margin-bottom:18px;border:2px solid var(--o1);background:linear-gradient(180deg,#FFF6E9,#fff)">
-  <div class="stephead"><div class="big">⚡</div><h3>Start mining in 2 clicks — no typing!</h3></div>
+  <div class="stephead"><div class="big">⚡</div><h3>Start mining in 3 clicks — no typing, no black window!</h3></div>
   <ol class="steps">
     <li><b>Click 1:</b> download the miner below, then right-click the zip → <b>Extract All</b>.</li>
-    <li><b>Click 2:</b> in the extracted folder, <b>double-click <code>Quasar-Start-Mining.bat</code></b>. That's it.</li>
+    <li><b>Click 2:</b> in the extracted folder, <b>double-click <code>Start-Quasar-Mining.vbs</code></b> — the mining window opens.</li>
+    <li><b>Click 3:</b> press the big gold <b>START MINING</b> button. That's it!</li>
   </ol>
   <p class="seeyou">👀 Behind the scenes (you don't type anything):</p>
-  <code class="cmd">checks Python → installs what's needed → creates your wallet → starts mining</code>
-  <p style="color:var(--mut);margin-top:8px">One window opens and mines on its own — about one block every ~30 seconds, coins go to your wallet automatically. Close the window to stop; your coins stay saved.</p>
+  <code class="cmd">Python check → auto-installs if missing → installs what's needed → creates your wallet → miner starts hidden</code>
+  <p style="color:var(--mut);margin-top:8px">The window shows <b>live</b>: block number growing + your QSR balance — about one block every ~30 seconds, coins go to your wallet automatically. Press STOP or close the window to stop; your coins stay saved.</p>
   <div id="minerGate1"></div>
   <p class="cs" style="margin-top:10px">📖 Prefer step-by-step? The full 6-step guide is right below.</p>
 </div>
@@ -406,7 +442,7 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
           return;
         }
         if (p.minerApproved){
-          setAll('<a class="btn" style="font-size:15px;padding:12px 28px;margin:12px 0 0" href="Quasar-Miner-OneClick.zip" download>⬇️ Download One-Click Miner</a>');
+          setAll('<a class="btn" style="font-size:15px;padding:12px 28px;margin:12px 0 0" href="Quasar-Miner-OneClick-GUI.zip" download>⬇️ Download One-Click Miner (GUI)</a>');
         } else if (p.idFrontURL && p.idBackURL){
           setAll(gateHTML('⏳ <b>ID under review.</b><br><span style="color:var(--mut);font-size:13.5px">Your ID photos are uploaded. We will unlock your miner download after approval.</span>'));
         } else {
@@ -437,15 +473,13 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
 })();
 </script>
 <div class="card rv" style="margin-bottom:18px">
-  <div class="stephead"><div class="big">01</div><h3>⬇️ Install Python</h3></div>
+  <div class="stephead"><div class="big">01</div><h3>⬇️ Python — installs itself!</h3></div>
   <ol class="steps">
-    <li>Go to <b>python.org</b> → Downloads → Windows → download the latest <b>Python 3.x</b>.</li>
-    <li>Run the installer → tick <b>✅ "Add python.exe to PATH"</b> (do NOT skip this!) → Install Now.</li>
-    <li>Check it: open <b>cmd</b>, type <code>python --version</code> and press Enter.</li>
+    <li><b>Nothing to do!</b> When you press START MINING, the app checks for Python and <b>downloads + installs it automatically</b> (one time only, no admin needed).</li>
+    <li>Only if auto-install ever fails: go to <b>python.org</b> → Downloads → Windows → install Python 3.x with ✅ "Add python.exe to PATH" ticked.</li>
   </ol>
   <p class="seeyou">👀 You will see:</p>
-  <code class="cmd">Python 3.12.1</code>
-  <div class="warn">⚠️ If you see <b>'python' is not recognized</b> — you missed the PATH tick. Reinstall Python with the tick.</div>
+  <code class="cmd">Python found - OK.  (inside the app window)</code>
 </div>
 
 <div class="card rv" style="margin-bottom:18px">
