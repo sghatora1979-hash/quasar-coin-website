@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Quasar Coin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Firebase (Google) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+<script src="config.js"></script>
+<script src="qfirebase.js"></script>
+<style>
+:root{
+  --bg:#FFF9F2; --card:#FFFFFF;
+  --o1:#FF6B1A; --o2:#FF9A3C; --amber:#FFB800;
+  --ink:#2D1B0E; --mut:#7A5A3E; --line:rgba(255,107,26,.16);
+  --ok:#1E9E5A; --err:#D63B2F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;min-height:100vh;
+  display:flex;flex-direction:column}
+h1,h2,.pf{font-family:'Poppins',sans-serif}
+nav{position:sticky;top:0;z-index:60;display:flex;justify-content:space-between;align-items:center;
+  padding:14px 28px;background:rgba(255,249,242,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line)}
+.logo{font-family:'Poppins';font-weight:900;font-size:22px;letter-spacing:.5px;text-decoration:none;
+  background:linear-gradient(90deg,var(--o1),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav .links a{margin:0 11px;text-decoration:none;color:var(--ink);font-weight:600;font-size:15px}
+nav .links a:hover{color:var(--o1)}
+.wrap{flex:1;max-width:640px;width:100%;margin:0 auto;padding:36px 20px 56px}
+h1{font-size:30px;font-weight:800;margin-bottom:4px}
+.sub{color:var(--mut);font-size:15px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 24px;margin-bottom:20px;
+  box-shadow:0 12px 30px rgba(255,107,26,.1)}
+.card h2{font-size:19px;margin-bottom:4px}
+.card .csub{color:var(--mut);font-size:13.5px;margin-bottom:8px}
+label{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+input[type=email],input[type=text],input[type=password],input[type=tel]{
+  width:100%;padding:12px 15px;border-radius:12px;border:2px solid var(--line);
+  font-size:15.5px;font-family:inherit;color:var(--ink);background:#FFFDF9}
+input:focus{outline:none;border-color:var(--o1);box-shadow:0 0 0 3px rgba(255,107,26,.15)}
+.pwrow{position:relative}
+.pwrow .eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);border:0;background:none;
+  font-size:18px;cursor:pointer;color:var(--mut)}
+.btn{display:inline-block;font-family:'Poppins';font-weight:700;font-size:15px;color:#fff;text-align:center;
+  padding:12px 28px;border:0;border-radius:999px;margin-top:16px;cursor:pointer;
+  background:linear-gradient(92deg,var(--o1),var(--o2));box-shadow:0 8px 20px rgba(255,107,26,.35)}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
+.btn:disabled{opacity:.55;cursor:wait}
+.btn.ghost{background:#fff;color:var(--o1);border:2px solid var(--o1);box-shadow:none}
+.btn.danger{background:#fff;color:var(--err);border:2px solid var(--err);box-shadow:none}
+.status{border-radius:12px;padding:11px 14px;font-size:14px;margin-top:14px;display:none}
+.status.ok{display:block;background:#E9F7EF;border:1px solid #9ADBB5;color:#14663A}
+.status.err{display:block;background:#FDECEA;border:1px solid #F2A9A2;color:#A02318}
+.status.info{display:block;background:#FFF4E0;border:1px solid #E8A33D;color:#7A4A08}
+.prow{display:flex;align-items:center;gap:16px;margin:6px 0 4px}
+.avatar{width:84px;height:84px;border-radius:50%;object-fit:cover;background:#FFE9D2;border:3px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:34px;color:var(--o1);overflow:hidden;flex-shrink:0}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.filebox{border:2px dashed var(--line);border-radius:12px;padding:12px;text-align:center;background:#FFFDF9;cursor:pointer;font-size:14px}
+.filebox input{display:none}
+.idstatus{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.idchip{background:#E9F7EF;border:1px solid #9ADBB5;color:#14663A;font-size:13px;font-weight:600;
+  padding:8px 14px;border-radius:999px}
+.idchip.no{background:#FFF4E0;border-color:#E8A33D;color:#7A4A08}
+footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top:1px solid var(--line)}
+.hintline{font-size:13px;color:var(--mut);margin-top:8px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">QUASAR</a>
+  <div class="links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="index.html">Home</a>
+    <a href="#" id="navSignOut">Sign out</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <h1>⚙️ Settings</h1>
+  <p class="sub">Your profile, login and security — all in one place.</p>
+  <div id="gate"><div class="status info" style="display:block">Checking login…</div></div>
+
+  <div id="body" style="display:none">
+
+    <!-- PROFILE -->
+    <div class="card">
+      <h2>👤 Profile</h2>
+      <p class="csub">Your public details. Photo, name, address, phone.</p>
+      <div class="prow">
+        <div class="avatar" id="avatarPrev">👤</div>
+        <div class="filebox" id="photoBox" style="flex:1">📷 Change profile photo
+          <input type="file" id="photoFile" accept="image/*">
+        </div>
+      </div>
+      <label for="sName">Full name</label>
+      <input type="text" id="sName" placeholder="Your full name" autocomplete="name">
+      <label for="sAddress">Address</label>
+      <input type="text" id="sAddress" placeholder="Street, city, country" autocomplete="street-address">
+      <label for="sPhone">Phone number</label>
+      <input type="tel" id="sPhone" placeholder="+1 555 000 1234" autocomplete="tel">
+      <label for="sEmail2">Second email (backup)</label>
+      <input type="email" id="sEmail2" placeholder="backup@example.com">
+      <button class="btn" id="saveProfileBtn">Save profile</button>
+      <div class="status" id="profileStatus"></div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="card">
+      <h2>📧 Email address</h2>
+      <p class="csub">Current: <b id="curEmail">—</b></p>
+      <label for="newEmail">New email address</label>
+      <input type="email" id="newEmail" placeholder="new@example.com" autocomplete="email">
+      <p class="hintline">We'll send a verification link to the new address before changing it.</p>
+      <button class="btn" id="changeEmailBtn">Update email</button>
+      <div class="status" id="emailStatus"></div>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="card">
+      <h2>🔒 Password</h2>
+      <p class="csub">Change your login password anytime.</p>
+      <label for="curPass">Current password</label>
+      <div class="pwrow">
+        <input type="password" id="curPass" placeholder="Current password" autocomplete="current-password">
+        <button class="eye" data-for="curPass" type="button">👁️</button>
+      </div>
+      <label for="newPass">New password</label>
+      <div class="pwrow">
+        <input type="password" id="newPass" placeholder="Min. 6 characters" autocomplete="new-password">
+        <button class="eye" data-for="newPass" type="button">👁️</button>
+      </div>
+      <label for="newPass2">Confirm new password</label>
+      <div class="pwrow">
+        <input type="password" id="newPass2" placeholder="Repeat new password" autocomplete="new-password">
+        <button class="eye" data-for="newPass2" type="button">👁️</button>
+      </div>
+      <button class="btn" id="changePassBtn">Change password</button>
+      <div class="status" id="passStatus"></div>
+    </div>
+
+    <!-- ID DOCUMENTS -->
+    <div class="card">
+      <h2>🪪 ID documents</h2>
+      <p class="csub">Uploaded at registration. Stored privately — only you can see them.</p>
+      <div class="idstatus">
+        <span class="idchip no" id="idFrontChip">Front: not uploaded</span>
+        <span class="idchip no" id="idBackChip">Back: not uploaded</span>
+      </div>
+      <p class="hintline" id="idDate"></p>
+    </div>
+
+    <!-- SIGN OUT -->
+    <div class="card">
+      <h2>🚪 Sign out</h2>
+      <p class="csub">Log out of this device.</p>
+      <button class="btn danger" id="signOutBtn">Sign out</button>
+    </div>
+
+  </div>
+</div>
+
+<footer>© 2026 Quasar Coin. All rights reserved. · Testnet — coins have no monetary value.</footer>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  function show(el, msg, kind) { el.textContent = msg; el.className = "status " + (kind || "info"); }
+  function hide(el) { el.className = "status"; el.textContent = ""; }
+
+  document.querySelectorAll(".eye").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var i = $(b.getAttribute("data-for"));
+      i.type = i.type === "password" ? "text" : "password";
+    });
+  });
+
+  if (!window.QF || !QF.configured()) {
+    $("gate").innerHTML = '<div class="status info" style="display:block">Setup in progress — settings open soon.</div>';
+    return;
+  }
+  var fb = QF.init();
+  var user = null;
+
+  function goRegister() { window.location.href = "register.html"; }
+  $("navSignOut").addEventListener("click", function (e) { e.preventDefault(); doSignOut(); });
+  $("signOutBtn").addEventListener("click", doSignOut);
+  function doSignOut() { fb.auth.signOut().then(goRegister); }
+
+  fb.auth.onAuthStateChanged(function (u) {
+    if (!u) return goRegister();
+    user = u;
+    $("gate").style.display = "none";
+    $("body").style.display = "block";
+    $("curEmail").textContent = user.email || "—";
+    QF.getProfile(fb, user.uid, function (err, p) {
+      if (err || !p) return;
+      if (p.name) $("sName").value = p.name;
+      if (p.address) $("sAddress").value = p.address;
+      if (p.phone) $("sPhone").value = p.phone;
+      if (p.secondEmail) $("sEmail2").value = p.secondEmail;
+      if (p.photoURL) $("avatarPrev").innerHTML = '<img src="' + p.photoURL + '" alt="profile">';
+      if (p.idFrontURL) { var c = $("idFrontChip"); c.textContent = "Front: ✓ uploaded"; c.classList.remove("no"); }
+      if (p.idBackURL) { var c2 = $("idBackChip"); c2.textContent = "Back: ✓ uploaded"; c2.classList.remove("no"); }
+      if (p.idUploadedAt) $("idDate").textContent = "Uploaded: " + p.idUploadedAt.slice(0, 10);
+    });
+  });
+
+  // Photo picker
+  $("photoBox").addEventListener("click", function () { $("photoFile").click(); });
+  var newPhotoFile = null;
+  $("photoFile").addEventListener("change", function () {
+    newPhotoFile = this.files[0] || null;
+    if (newPhotoFile) {
+      var rd = new FileReader();
+      rd.onload = function (e) { $("avatarPrev").innerHTML = '<img src="' + e.target.result + '" alt="profile">'; };
+      rd.readAsDataURL(newPhotoFile);
+    }
+  });
+
+  // ---- SAVE PROFILE ----
+  $("saveProfileBtn").addEventListener("click", function () {
+    hide($("profileStatus"));
+    var btn = $("saveProfileBtn"); btn.disabled = true;
+    show($("profileStatus"), "Saving…", "info");
+    var data = {
+      name: $("sName").value.trim(),
+      address: $("sAddress").value.trim(),
+      phone: $("sPhone").value.trim(),
+      secondEmail: $("sEmail2").value.trim(),
+    };
+    function finish(photoURL) {
+      if (photoURL) data.photoURL = photoURL;
+      QF.saveProfile(fb, user.uid, data, function (e) {
+        btn.disabled = false;
+        if (e) return show($("profileStatus"), "Could not save. (" + e.code + ")", "err");
+        var disp = {};
+        if (data.name) disp.displayName = data.name;
+        if (photoURL) disp.photoURL = photoURL;
+        if (Object.keys(disp).length) user.updateProfile(disp).catch(function () {});
+        show($("profileStatus"), "✅ Profile saved!", "ok");
+      });
+    }
+    if (newPhotoFile) {
+      QF.uploadPhoto(fb, user.uid, "profile", newPhotoFile, function (e, url) {
+        if (e) { btn.disabled = false; return show($("profileStatus"), "Photo upload failed. (" + e.code + ")", "err"); }
+        newPhotoFile = null;
+        finish(url);
+      });
+    } else finish(null);
+  });
+
+  // ---- CHANGE EMAIL ----
+  $("changeEmailBtn").addEventListener("click", function () {
+    hide($("emailStatus"));
+    var ne = $("newEmail").value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ne))
+      return show($("emailStatus"), "Please enter a valid new email address.", "err");
+    if (ne === user.email) return show($("emailStatus"), "This is already your email.", "err");
+    var btn = $("changeEmailBtn"); btn.disabled = true;
+    show($("emailStatus"), "Sending verification to the new address…", "info");
+    var done = function (e) {
+      btn.disabled = false;
+      if (e) {
+        var msg = "Could not update email.";
+        if (e.code === "auth/requires-recent-login") msg = "For security, please sign out and log in again, then retry.";
+        else if (e.code === "auth/email-already-in-use") msg = "This email is already used by another account.";
+        return show($("emailStatus"), msg + " (" + e.code + ")", "err");
+      }
+      show($("emailStatus"), "✅ Verification link sent to " + ne + " — tap it to finish the change.", "ok");
+      $("newEmail").value = "";
+    };
+    if (user.verifyBeforeUpdateEmail) user.verifyBeforeUpdateEmail(ne).then(function () { done(null); }, done);
+    else user.updateEmail(ne).then(function () { done(null); }, done);
+  });
+
+  // ---- CHANGE PASSWORD ----
+  $("changePassBtn").addEventListener("click", function () {
+    hide($("passStatus"));
+    var cp = $("curPass").value, np = $("newPass").value, np2 = $("newPass2").value;
+    if (!cp) return show($("passStatus"), "Enter your current password.", "err");
+    if (np.length < 6) return show($("passStatus"), "New password must be at least 6 characters.", "err");
+    if (np !== np2) return show($("passStatus"), "New passwords do not match.", "err");
+    var btn = $("changePassBtn"); btn.disabled = true;
+    show($("passStatus"), "Verifying…", "info");
+    var cred = firebase.auth.EmailAuthProvider.credential(user.email, cp);
+    user.reauthenticateWithCredential(cred)
+      .then(function () { return user.updatePassword(np); })
+      .then(function () {
+        btn.disabled = false;
+        $("curPass").value = ""; $("newPass").value = ""; $("newPass2").value = "";
+        show($("passStatus"), "✅ Password changed!", "ok");
+      })
+      .catch(function (e) {
+        btn.disabled = false;
+        var msg = "Could not change password.";
+        if (e.code === "auth/wrong-password") msg = "Current password is wrong.";
+        else if (e.code === "auth/weak-password") msg = "New password is too weak.";
+        show($("passStatus"), msg + " (" + e.code + ")", "err");
+      });
+  });
+})();
+</script>
+</body>
+</html>
