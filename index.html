@@ -256,8 +256,8 @@ ol.steps b{color:var(--ink)}
   <div class="card"><h3>💥 Outshines galaxies</h3><p style="color:var(--mut)">One quasar can shine brighter than billions of stars combined.</p></div>
 </div>
 <div class="pillars" style="margin-top:16px">
-  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold"><img class="q3dimg" src="quasar-gallery-1.jpg" alt="Quasar — blazing core with twin jets"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">The blazing heart — energy pouring across the universe</p></div>
-  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="galaxy"><img class="q3dimg" src="quasar-gallery-2.jpg" alt="Quasar jet erupting from a spiral galaxy"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">A galaxy crowned by its quasar — the brightest star</p></div>
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold" data-core="0.56,0.44"><img class="q3dimg" src="quasar-gallery-1.jpg" alt="Quasar — blazing core with twin jets"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">The blazing heart — energy pouring across the universe</p></div>
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="galaxy" data-core="0.5,0.52"><img class="q3dimg" src="quasar-gallery-2.jpg" alt="Quasar jet erupting from a spiral galaxy"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">A galaxy crowned by its quasar — the brightest star</p></div>
 </div>
 <script>
 (function(){
@@ -285,7 +285,42 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
   for(var i=0;i<46;i++)ps.push({x:Math.random(),y:Math.random(),s:0.6+Math.random()*2.2,
     v:0.0006+Math.random()*0.0022,ph:Math.random()*6.28,sw:0.004+Math.random()*0.012,
     c:pal[i%pal.length]});
+  /* gold Q-coins bursting from the quasar core */
+  var coreA=(scene.getAttribute('data-core')||'0.5,0.5').split(',');
+  var coreX=parseFloat(coreA[0]),coreY=parseFloat(coreA[1]);
+  var coins=[];
+  function newCoin(init){return {ang:Math.random()*6.28,d:init?Math.random()*0.9:0,
+    spd:0.22+Math.random()*0.3,spin:Math.random()*6.28,sv:2.5+Math.random()*4,
+    sz:0.55+Math.random()*0.75};}
+  for(var ci3=0;ci3<14;ci3++)coins.push(newCoin(true));
+  function drawCoin(x,y,s,sq,alpha){
+    ctx.save();ctx.translate(x,y);ctx.scale(Math.max(0.12,sq),1);ctx.scale(s,s);
+    ctx.globalAlpha=alpha;
+    var g=ctx.createRadialGradient(0,0,0.08,0,0,1);
+    g.addColorStop(0,'#fff7c9');g.addColorStop(0.5,'#ffd94d');g.addColorStop(1,'#b97c06');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,1,0,7);ctx.fill();
+    ctx.strokeStyle='#8a5a00';ctx.lineWidth=0.14;ctx.beginPath();ctx.arc(0,0,0.86,0,7);ctx.stroke();
+    ctx.fillStyle='#7a4d00';ctx.font='900 1.15px Poppins,Arial,sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Q',0,0.1);
+    ctx.restore();ctx.globalAlpha=1;}
   (function tick(){ctx.clearRect(0,0,W,H);var t=Date.now()/1000;
+    /* pulsing core glow — coins are born here */
+    var gx=coreX*W,gy=coreY*H,gr=(0.11+0.035*Math.sin(t*3.1))*Math.max(W,H);
+    var gg=ctx.createRadialGradient(gx,gy,2,gx,gy,gr);
+    gg.addColorStop(0,'rgba(255,242,205,'+(0.55+0.2*Math.sin(t*3.1)).toFixed(2)+')');
+    gg.addColorStop(1,'rgba(255,200,100,0)');
+    ctx.fillStyle=gg;ctx.beginPath();ctx.arc(gx,gy,gr,0,7);ctx.fill();
+    /* coins fly out from inside */
+    var base=Math.min(W,H)*0.085;
+    for(var j=0;j<coins.length;j++){var cn=coins[j];
+      cn.d+=cn.spd/60;cn.spin+=cn.sv/60;
+      if(cn.d>1){coins[j]=newCoin(false);continue;}
+      var px=gx+Math.cos(cn.ang)*cn.d*W*0.58,
+          py=gy+Math.sin(cn.ang)*cn.d*H*0.58;
+      var s=(0.12+cn.d*1.15)*cn.sz*base;
+      var sq=Math.abs(Math.cos(cn.spin))*0.85+0.15;
+      var al=Math.min(1,cn.d/0.12)*Math.min(1,(1-cn.d)/0.22)*0.95;
+      drawCoin(px,py,s,sq,al);}
     for(var i=0;i<ps.length;i++){var p=ps[i];
       p.y-=p.v;if(p.y<-0.05){p.y=1.05;p.x=Math.random();}
       var x=(p.x+Math.sin(t*0.9+p.ph)*p.sw)*W,y=p.y*H;
@@ -322,7 +357,7 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
   <p class="seeyou">👀 Behind the scenes (you don't type anything):</p>
   <code class="cmd">checks Python → installs what's needed → creates your wallet → starts mining</code>
   <p style="color:var(--mut);margin-top:8px">One window opens and mines on its own — about one block every ~30 seconds, coins go to your wallet automatically. Close the window to stop; your coins stay saved.</p>
-  <a class="btn" style="font-size:15px;padding:12px 28px;margin:12px 0 0" href="Quasar-Miner-OneClick.zip" download>⬇️ Download One-Click Miner</a>
+  <div id="minerGate1"></div>
   <p class="cs" style="margin-top:10px">📖 Prefer step-by-step? The full 6-step guide is right below.</p>
 </div>
 <div class="card rv" id="liveStrip" style="margin-bottom:18px;display:none">
@@ -338,6 +373,52 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="config.js"></script>
 <script src="qfirebase.js"></script>
+<script>
+(function(){
+  /* ---- MINER DOWNLOAD GATE: login + verified email + ID + approval ---- */
+  function gateHTML(inner){
+    return '<div class="card" style="margin:12px 0 0;padding:14px 18px;background:rgba(255,255,255,.7)">' + inner + '</div>';
+  }
+  function renderGates(){
+    var g1 = document.getElementById('minerGate1'), g2 = document.getElementById('minerGate2');
+    if (!g1 && !g2) return;
+    function setAll(html){ if(g1) g1.innerHTML = html; if(g2) g2.innerHTML = html; }
+    /* Firebase not set up yet -> locked */
+    if (!window.QF || !QF.configured()){
+      setAll(gateHTML('🔒 <b>Miner download is locked.</b><br><span style="color:var(--mut);font-size:13.5px">Mining opens only for registered members with verified ID — the account system is setting up.</span>'));
+      return;
+    }
+    var fb = QF.init();
+    if (!fb){ setAll(gateHTML('🔒 <b>Miner download is locked.</b>')); return; }
+    setAll('<p style="color:var(--mut)">Checking your account…</p>');
+    fb.auth.onAuthStateChanged(function(user){
+      if (!user){
+        setAll('<a class="btn" style="font-size:15px;padding:12px 28px;margin:12px 0 0" href="register.html">🔒 Register / Login to download the miner</a>');
+        return;
+      }
+      if (!user.emailVerified){
+        setAll(gateHTML('📧 <b>Verify your email first.</b><br><span style="color:var(--mut);font-size:13.5px">We sent you a verification link — open it, then refresh this page.</span>'));
+        return;
+      }
+      QF.getProfile(fb, user.uid, function(err, p){
+        if (err || !p){
+          setAll(gateHTML('👤 <b>Finish your profile first.</b><br><span style="color:var(--mut);font-size:13.5px"><a href="settings.html">Open Settings</a> and complete your details.</span>'));
+          return;
+        }
+        if (p.minerApproved){
+          setAll('<a class="btn" style="font-size:15px;padding:12px 28px;margin:12px 0 0" href="Quasar-Miner-OneClick.zip" download>⬇️ Download One-Click Miner</a>');
+        } else if (p.idFrontURL && p.idBackURL){
+          setAll(gateHTML('⏳ <b>ID under review.</b><br><span style="color:var(--mut);font-size:13.5px">Your ID photos are uploaded. We will unlock your miner download after approval.</span>'));
+        } else {
+          setAll('<a class="btn" style="font-size:15px;padding:12px 28px;margin:12px 0 0" href="settings.html">🪪 Upload ID proof to unlock the miner</a>');
+        }
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderGates);
+  else renderGates();
+})();
+</script>
 <script>
 (function(){
   if (!window.QF || !QF.configured()) return;
@@ -375,7 +456,7 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
   </ol>
   <p class="seeyou">👀 You will see:</p>
   <code class="cmd">a folder with files like quasar_cli.py, node.py, README.md</code>
-  <a class="btn" style="font-size:14px;padding:11px 26px;margin:12px 0 0" href="Quasar-Miner-OneClick.zip" download>⬇️ Download Miner</a>
+  <div id="minerGate2"></div>
 </div>
 
 <div class="card rv" style="margin-bottom:18px">
@@ -704,7 +785,6 @@ hud();
     <div><div class="big pf" style="font-size:44px;font-weight:900;color:var(--o1)">2</div><p><b>Send</b><br><code class="cmd">send founder QU&lt;address&gt; 1000</code></p></div>
     <div><div class="big pf" style="font-size:44px;font-weight:900;color:var(--o1)">3</div><p><b>Delivered ✅</b><br><span style="color:var(--mut)">Confirmed in the next block. Your friend will see it in their balance.</span></p></div>
   </div>
-  <p style="margin-top:18px">📲 <a class="btn" style="font-size:14px;padding:11px 26px;background:linear-gradient(90deg,#1FA855,#25D366)" href="https://wa.me/?text=My%20Quasar%20Coin%20(QSR)%20address%3A%20%5Bpaste%20your%20address%20here%5D%20%E2%80%94%20send%20me%20QSR!">Share Address on WhatsApp</a></p>
 </div>
 </section>
 
@@ -917,7 +997,7 @@ scene.add(embers);
 var clock=new THREE.Clock();
 (function tick(){
 var dt=Math.min(clock.getDelta(),0.05),t=clock.elapsedTime;
-G.rotation.y+=dt*0.85;                       /* the spin */
+G.rotation.y=Math.sin(t*0.55)*0.38;           /* gentle sway — Q stays straight & readable */
 G.rotation.x=0.16+Math.sin(t*0.8)*0.07;       /* gentle wobble */
 G.position.y=Math.sin(t*1.1)*0.16;            /* float, stays in place */
 ringPts.rotation.y+=dt*0.4;                   /* quasar ring orbits */

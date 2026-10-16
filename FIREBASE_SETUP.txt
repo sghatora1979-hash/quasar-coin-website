@@ -131,3 +131,20 @@ Jab domain le loge, tab emails apne domain se bhej sakte ho:
 3. Verify → Apply. Bas — har email tumhare domain se aayega.
 Note: iske liye shayad Blaze plan chahiye (card add karna padta hai;
 free limit ke andar paise nahi lagte). Testing me iski zaroorat nahi.
+
+================================================================
+MINER APPROVAL (tumhara kaam — jab koi register kare)
+================================================================
+Jab koi user register + ID upload karega, uska miner download
+LOCKED rahega jab tak tum approve nahi karte. Approve kaise:
+
+1. console.firebase.google.com → tumhara project
+2. Firestore Database → "users" collection kholo
+3. Us user ke document par click karo
+4. "Add field" dabao:
+   Field: minerApproved | Type: boolean | Value: true
+   Field: minerApprovedAt | Type: string | Value: aaj ki date
+5. Save. Bas! Uska download turant unlock ho jayega.
+
+Reject karna ho to minerApproved = false kar do (ya field delete).
+User ki ID photos dekhne ke liye: Storage → "kyc" folder → uska ID.

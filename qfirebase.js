@@ -25,7 +25,8 @@
 
   // ---- User profile helpers (Firestore `users/{uid}`) ----
   var PROFILE_FIELDS = ["name", "address", "phone", "secondEmail", "photoURL",
-                        "idFrontURL", "idBackURL", "idUploadedAt", "createdAt"];
+                        "idFrontURL", "idBackURL", "idUploadedAt", "createdAt",
+                        "minerApproved", "minerApprovedAt"];
 
   // cb(err, profile|null)
   function getProfile(fb, uid, cb) {
