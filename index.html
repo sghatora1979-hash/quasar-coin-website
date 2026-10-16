@@ -262,7 +262,8 @@ ol.steps b{color:var(--ink)}
 </div>
 <script>
 (function(){
-/* 3D drag-to-rotate (all directions) + inertia + idle sway */
+/* 3D drag-to-rotate (all directions) + inertia + idle sway — waits until ALL cards exist */
+function initQ3D(){
 document.querySelectorAll('.q3dcard').forEach(function(card){
   var scene=card.querySelector('.q3dscene');
   var rx=0,ry=0,trx=0,try_=0,vx=0,vy=0,dragging=false,lx=0,ly=0,lastT=0;
@@ -350,22 +351,9 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
       ctx.beginPath();ctx.arc(x,y,p.s,0,7);ctx.fill();}
     ctx.globalAlpha=1;requestAnimationFrame(tick);})();
 });
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initQ3D);}else{initQ3D();}
 })();
 </script>
-<section class="rv" style="margin-top:34px">
-<span class="eyebrow eyebrow2">🌌 The Quasar Universe</span>
-<h2 class="st">Seven windows into the cosmos</h2>
-<p class="cs">The real universe that inspired our coin — alive in 3D. Gold coins burst from each quasar's heart.</p>
-<div class="pillars" style="margin-top:16px">
-  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold" data-core="0.52,0.52"><img class="q3dimg" src="quasar-u1.jpg" alt="Quasar with blazing accretion disk and twin jets"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">The hungry heart — matter spiraling into the giant</p></div>
-  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="galaxy" data-core="0.62,0.55"><img class="q3dimg" src="quasar-u2.jpg" alt="Spiral galaxy glowing blue and pink"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">Stellar nursery — new stars ignite in spiral arms</p></div>
-  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="galaxy" data-core="0.5,0.48"><img class="q3dimg" src="quasar-u3.jpg" alt="Galaxy with a powerful energy jet"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">Energy jets — piercing the dark at near light-speed</p></div>
-  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold" data-core="0.52,0.5"><img class="q3dimg" src="quasar-u4.jpg" alt="Quasar accretion disk with blue jets"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">The accretion disk — hotter than a million suns</p></div>
-  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="galaxy" data-core="0.5,0.52"><img class="q3dimg" src="quasar-u5.jpg" alt="Spiral galaxy in red and blue"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">Gravity's whirlpool — a galaxy in motion</p></div>
-  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold" data-core="0.5,0.5"><img class="q3dimg" src="quasar-u6.jpg" alt="Black hole with glowing accretion disk"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">The point of no return — the event horizon</p></div>
-  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold" data-core="0.5,0.48"><img class="q3dimg" src="quasar-u7.jpg" alt="Quasar core erupting with light"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">Let there be light — the quasar ignites</p></div>
-</div>
-</section>
 <div class="card rv">
   <h3>🌟 From the cosmos to our coin</h3>
   <table class="trouble" style="width:100%;border-collapse:collapse;margin-top:10px">
@@ -411,9 +399,13 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
 <script src="qfirebase.js"></script>
 <script>
 (function(){
-  /* ---- MINER DOWNLOAD GATE: login + verified email + ID + approval ---- */
+  /* ---- MINER ACCESS: register with email -> verify -> START MINING (no lock, no approval) ---- */
   function gateHTML(inner){
     return '<div class="card" style="margin:12px 0 0;padding:14px 18px;background:rgba(255,255,255,.7)">' + inner + '</div>';
+  }
+  function startBtn(){
+    return '<a class="btn" style="font-size:20px;padding:16px 46px;margin:14px 0 0;background:linear-gradient(180deg,#FFD54A,#F5A623);border:2px solid #B87700;box-shadow:0 4px 18px rgba(245,166,35,.45);color:#3A2500" href="Quasar-Miner-OneClick-GUI.zip" download>⚡ START MINING</a>'
+      + '<p style="color:var(--mut);font-size:13px;margin:10px 0 0">Downloads the one-click miner for Windows.<br>Extract the zip → double-click <b>Start-Quasar-Mining.vbs</b> → press START MINING in the app. No typing, no black window.</p>';
   }
   function renderGates(){
     var g1 = document.getElementById('minerGate1'), g2 = document.getElementById('minerGate2');
@@ -421,7 +413,7 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
     function setAll(html){ if(g1) g1.innerHTML = html; if(g2) g2.innerHTML = html; }
     /* Firebase not set up yet -> locked */
     if (!window.QF || !QF.configured()){
-      setAll(gateHTML('🔒 <b>Miner download is locked.</b><br><span style="color:var(--mut);font-size:13.5px">Mining opens only for registered members with verified ID — the account system is setting up.</span>'));
+      setAll(gateHTML('🔒 <b>Miner download is locked.</b><br><span style="color:var(--mut);font-size:13.5px">The account system is setting up — please check back soon.</span>'));
       return;
     }
     var fb = QF.init();
@@ -429,26 +421,14 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
     setAll('<p style="color:var(--mut)">Checking your account…</p>');
     fb.auth.onAuthStateChanged(function(user){
       if (!user){
-        setAll('<a class="btn" style="font-size:15px;padding:12px 28px;margin:12px 0 0" href="register.html">🔒 Register / Login to download the miner</a>');
+        setAll('<a class="btn" style="font-size:16px;padding:14px 32px;margin:12px 0 0" href="register.html">📝 Register with your email — then start mining</a>');
         return;
       }
       if (!user.emailVerified){
-        setAll(gateHTML('📧 <b>Verify your email first.</b><br><span style="color:var(--mut);font-size:13.5px">We sent you a verification link — open it, then refresh this page.</span>'));
+        setAll(gateHTML('📧 <b>One more step — verify your email.</b><br><span style="color:var(--mut);font-size:13.5px">We sent you a verification link — open it, then refresh this page to start mining.</span>'));
         return;
       }
-      QF.getProfile(fb, user.uid, function(err, p){
-        if (err || !p){
-          setAll(gateHTML('👤 <b>Finish your profile first.</b><br><span style="color:var(--mut);font-size:13.5px"><a href="settings.html">Open Settings</a> and complete your details.</span>'));
-          return;
-        }
-        if (p.minerApproved){
-          setAll('<a class="btn" style="font-size:15px;padding:12px 28px;margin:12px 0 0" href="Quasar-Miner-OneClick-GUI.zip" download>⬇️ Download One-Click Miner (GUI)</a>');
-        } else if (p.idFrontURL && p.idBackURL){
-          setAll(gateHTML('⏳ <b>ID under review.</b><br><span style="color:var(--mut);font-size:13.5px">Your ID photos are uploaded. We will unlock your miner download after approval.</span>'));
-        } else {
-          setAll('<a class="btn" style="font-size:15px;padding:12px 28px;margin:12px 0 0" href="settings.html">🪪 Upload ID proof to unlock the miner</a>');
-        }
-      });
+      setAll(startBtn());
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderGates);
