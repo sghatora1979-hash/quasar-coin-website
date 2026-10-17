@@ -1,0 +1,66 @@
+QUASAR COIN WEBSITE — PATCH NOTES
+=================================
+
+Files reviewed
+--------------
+- register.html, dashboard.html, index.html
+- config.js, qfirebase.js
+- Firestore and Storage rules
+- Included one-click miner archive names and package structure
+
+Changes in this patched package
+-------------------------------
+1. Email registration no longer requires uploading government ID photos.
+   ID front/back uploads remain optional and must be supplied together.
+2. Profile saving now stores ID URLs only when optional ID images were uploaded.
+3. Firestore public miner telemetry rules now enforce exact field names,
+   field types, string size limits, non-negative block heights, and positive
+   timestamps. Reports remain append-only.
+4. Original site and miner files are retained otherwise.
+
+Important limitations
+---------------------
+- Email/password registration and verification require the Firebase project
+  configured in config.js to remain active, with Email/Password enabled and
+  the hosting domain added to Firebase Authentication's authorized domains.
+- A verified email is required before the website reveals the miner download.
+- The website's START MINING button downloads a Windows miner package; it
+  cannot run a native Windows process directly inside a browser. The user
+  must extract the package and launch its included starter file.
+- Public telemetry reports can be spoofed by clients because the current
+  miner-report endpoint is unauthenticated. The stricter Firestore rules
+  reduce malformed writes but do NOT prove that a block was genuinely mined.
+  Do not use these reports as authoritative balances or monetary rewards.
+- Testnet coins have no monetary value. Do not market them as guaranteed
+  earnings or a real investment.
+- I did not deploy the website or change your live Firebase settings.
+
+Setup checklist
+---------------
+1. Host the extracted quasar-coin-website folder on a static host using HTTPS.
+2. In Firebase Authentication, enable Email/Password and authorize the site
+   domain.
+3. Confirm config.js contains the intended Firebase web app config.
+4. Publish firestore.rules and storage.rules in Firebase Console.
+5. Register a test account, open the verification email, then log in.
+6. Test the START MINING download on a Windows machine in a disposable folder.
+7. Confirm the miner's local block height and wallet balance using its own
+   CLI; treat website telemetry as untrusted until authenticated consensus
+   reporting is implemented.
+
+MERGE ADDENDUM (2026-10-16) — combined both branches into one package
+---------------------------------------------------------------------
+5. Added web-miner.js: real in-browser mining (Web Workers + scrypt,
+   lighter "web" parameters). START MINING on the homepage now opens
+   dashboard.html#webMiner — one click, no download. Honest labels kept:
+   balance shown as "QSR (testnet)", "Testnet coins have no real money
+   value", and "separate from the laptop P2P chain". Mining runs only
+   while the page is open and only after pressing START.
+6. FIXED BUG: the FIXED package was missing qfirebase.js although
+   register.html loads it (registration would have broken). Restored.
+7. Laptop miner download kept as a secondary option (homepage link under
+   the web-mining button + a card on the dashboard) — heavier mining on
+   the real P2P network via Quasar-Miner-OneClick-GUI.zip.
+8. Firestore strict rules (FIXED version) already allow the web miner's
+   per-account writes: users/{uid} is writable only by that same user,
+   and the web miner writes only its own doc via merge.

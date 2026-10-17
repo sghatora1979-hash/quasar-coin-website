@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register / Login — Quasar Coin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Firebase (Google) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+<script src="config.js"></script>
+<script src="qfirebase.js"></script>
+<style>
+:root{
+  --bg:#FFF9F2; --bg2:#FFF3E2; --card:#FFFFFF;
+  --o1:#FF6B1A; --o2:#FF9A3C; --amber:#FFB800;
+  --ink:#2D1B0E; --mut:#7A5A3E; --line:rgba(255,107,26,.16);
+  --ok:#1E9E5A; --err:#D63B2F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;min-height:100vh;
+  display:flex;flex-direction:column}
+h1,h2,.pf{font-family:'Poppins',sans-serif}
+nav{position:sticky;top:0;z-index:60;display:flex;justify-content:space-between;align-items:center;
+  padding:14px 28px;background:rgba(255,249,242,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line)}
+.logo{font-family:'Poppins';font-weight:900;font-size:22px;letter-spacing:.5px;text-decoration:none;
+  background:linear-gradient(90deg,var(--o1),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav .links a{margin:0 11px;text-decoration:none;color:var(--ink);font-weight:600;font-size:15px}
+nav .links a:hover{color:var(--o1)}
+.wrap{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px 56px;
+  background:radial-gradient(700px 380px at 15% 10%,#FFE3C2 0%,transparent 60%),
+             radial-gradient(700px 420px at 85% 20%,#FFD9A0 0%,transparent 60%),
+             linear-gradient(180deg,#FFF6E9 0%,var(--bg) 100%)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:36px 32px;max-width:480px;width:100%;
+  box-shadow:0 20px 50px rgba(255,107,26,.14);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--o1),var(--amber))}
+.eyebrow{display:inline-block;font-weight:700;font-size:12px;letter-spacing:2.5px;color:var(--o1);
+  background:rgba(255,107,26,.1);padding:8px 18px;border-radius:999px;margin-bottom:14px;text-transform:uppercase}
+h1{font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.sub{color:var(--mut);font-size:15px;margin-bottom:18px}
+.tabs{display:flex;gap:8px;margin-bottom:20px;background:#FFF4E6;border-radius:999px;padding:6px}
+.tab{flex:1;border:0;background:transparent;font-family:'Poppins';font-weight:700;font-size:14px;color:var(--mut);
+  padding:10px 6px;border-radius:999px;cursor:pointer}
+.tab.active{background:linear-gradient(92deg,var(--o1),var(--o2));color:#fff;box-shadow:0 6px 14px rgba(255,107,26,.35)}
+label{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+input[type=email],input[type=text],input[type=password],input[type=tel]{
+  width:100%;padding:13px 16px;border-radius:14px;border:2px solid var(--line);
+  font-size:16px;font-family:inherit;color:var(--ink);background:#FFFDF9}
+input:focus{outline:none;border-color:var(--o1);box-shadow:0 0 0 3px rgba(255,107,26,.15)}
+.pwrow{position:relative}
+.pwrow .eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);border:0;background:none;
+  font-size:18px;cursor:pointer;color:var(--mut)}
+.hint{font-size:13px;color:var(--mut);margin-top:6px}
+.filebox{border:2px dashed var(--line);border-radius:14px;padding:16px;text-align:center;background:#FFFDF9;cursor:pointer}
+.filebox:hover{border-color:var(--o1)}
+.filebox input{display:none}
+.filebox .fname{font-size:13px;color:var(--ok);font-weight:600;margin-top:6px;word-break:break-all}
+.btn{display:block;width:100%;font-family:'Poppins';font-weight:700;font-size:16px;color:#fff;text-align:center;
+  padding:14px;border:0;border-radius:999px;margin-top:20px;cursor:pointer;
+  background:linear-gradient(92deg,var(--o1),var(--o2));box-shadow:0 10px 26px rgba(255,107,26,.4);
+  transition:transform .18s,box-shadow .18s}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 32px rgba(255,107,26,.5)}
+.btn:disabled{opacity:.55;cursor:wait}
+.status{border-radius:14px;padding:13px 16px;font-size:14.5px;margin-top:16px;display:none}
+.status.ok{display:block;background:#E9F7EF;border:1px solid #9ADBB5;color:#14663A}
+.status.err{display:block;background:#FDECEA;border:1px solid #F2A9A2;color:#A02318}
+.status.info{display:block;background:#FFF4E0;border:1px solid #E8A33D;color:#7A4A08}
+.bigmail{font-size:52px;text-align:center;margin-bottom:8px}
+.center{text-align:center}
+footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top:1px solid var(--line)}
+.linklike{border:0;background:none;color:var(--o1);font-weight:700;cursor:pointer;font-size:14.5px;padding:0}
+.priv{font-size:12.5px;color:var(--mut);margin-top:14px;text-align:center}
+@media(max-width:640px){nav .links a{margin:0 6px;font-size:13.5px}.card{padding:28px 20px}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">QUASAR</a>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="index.html#demo3d">3D Demo</a>
+    <a href="paper.html">Paper</a>
+    <a href="index.html#faq">FAQ</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="card">
+    <span class="eyebrow">Join Quasar</span>
+    <h1>Your account</h1>
+    <p class="sub">Register with your email and password, or log in.</p>
+
+    <div class="tabs">
+      <button class="tab active" id="tabReg">Register</button>
+      <button class="tab" id="tabLogin">Login</button>
+      <button class="tab" id="tabForgot">Forgot?</button>
+    </div>
+
+    <!-- ============ REGISTER ============ -->
+    <div id="paneReg">
+      <label for="rName">Full name</label>
+      <input type="text" id="rName" placeholder="Your full name" autocomplete="name">
+
+      <label for="rEmail">Email address</label>
+      <input type="email" id="rEmail" placeholder="you@example.com" autocomplete="email">
+      <p class="hint">We'll send a verification link to this email.</p>
+
+      <label for="rPass">Create password</label>
+      <div class="pwrow">
+        <input type="password" id="rPass" placeholder="Min. 6 characters" autocomplete="new-password">
+        <button class="eye" data-for="rPass" type="button">👁️</button>
+      </div>
+
+      <label for="rPass2">Confirm password</label>
+      <div class="pwrow">
+        <input type="password" id="rPass2" placeholder="Repeat password" autocomplete="new-password">
+        <button class="eye" data-for="rPass2" type="button">👁️</button>
+      </div>
+
+      <label>ID proof — front photo (optional)</label>
+      <div class="filebox" id="boxFront">📷 Tap to choose front photo of your ID
+        <input type="file" id="rIdFront" accept="image/*">
+        <div class="fname" id="nameFront"></div>
+      </div>
+
+      <label>ID proof — back photo (optional)</label>
+      <div class="filebox" id="boxBack">📷 Tap to choose back photo of your ID
+        <input type="file" id="rIdBack" accept="image/*">
+        <div class="fname" id="nameBack"></div>
+      </div>
+      <p class="hint">ID photos are optional. Upload both only if you specifically want to provide them; do not upload sensitive documents unless necessary.</p>
+
+      <button class="btn" id="regBtn">Create my account</button>
+      <div class="status" id="regStatus"></div>
+      <p class="priv">By registering you agree this is a testnet — coins have no monetary value.</p>
+    </div>
+
+    <!-- ============ LOGIN ============ -->
+    <div id="paneLogin" style="display:none">
+      <label for="lEmail">Email address</label>
+      <input type="email" id="lEmail" placeholder="you@example.com" autocomplete="email">
+      <label for="lPass">Password</label>
+      <div class="pwrow">
+        <input type="password" id="lPass" placeholder="Your password" autocomplete="current-password">
+        <button class="eye" data-for="lPass" type="button">👁️</button>
+      </div>
+      <button class="btn" id="loginBtn">Log in</button>
+      <div class="status" id="loginStatus"></div>
+      <p class="center" style="margin-top:12px">
+        <button class="linklike" id="resendBtn" style="display:none">Resend verification email</button>
+      </p>
+    </div>
+
+    <!-- ============ FORGOT ============ -->
+    <div id="paneForgot" style="display:none">
+      <div class="bigmail">🔑</div>
+      <h2 class="center">Reset password</h2>
+      <p class="sub center">Enter your email — we'll send you a link to set a new password.</p>
+      <label for="fEmail">Email address</label>
+      <input type="email" id="fEmail" placeholder="you@example.com" autocomplete="email">
+      <button class="btn" id="forgotBtn">Send reset link</button>
+      <div class="status" id="forgotStatus"></div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 Quasar Coin. All rights reserved. · Testnet — coins have no monetary value.</footer>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  function show(el, msg, kind) { el.textContent = msg; el.className = "status " + (kind || "info"); }
+  function hide(el) { el.className = "status"; el.textContent = ""; }
+
+  // Tabs
+  var panes = { tabReg: "paneReg", tabLogin: "paneLogin", tabForgot: "paneForgot" };
+  Object.keys(panes).forEach(function (t) {
+    $(t).addEventListener("click", function () {
+      Object.keys(panes).forEach(function (x) {
+        $(x).classList.toggle("active", x === t);
+        $(panes[x]).style.display = x === t ? "block" : "none";
+      });
+    });
+  });
+
+  // Password show/hide
+  document.querySelectorAll(".eye").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var i = $(b.getAttribute("data-for"));
+      i.type = i.type === "password" ? "text" : "password";
+    });
+  });
+
+  // File pickers
+  [["boxFront", "rIdFront", "nameFront"], ["boxBack", "rIdBack", "nameBack"]].forEach(function (t) {
+    $(t[0]).addEventListener("click", function () { $(t[1]).click(); });
+    $(t[1]).addEventListener("change", function () {
+      $(t[2]).textContent = this.files.length ? "✓ " + this.files[0].name : "";
+    });
+  });
+
+  if (!window.QF || !QF.configured()) {
+    show($("regStatus"), "Setup in progress — registration opens soon. The site owner is connecting Google login.", "info");
+    ["regBtn", "loginBtn", "forgotBtn"].forEach(function (b) { $(b).disabled = true; });
+    return;
+  }
+  var fb = QF.init();
+
+  // Already logged in → dashboard
+  fb.auth.onAuthStateChanged(function (user) {
+    if (user && user.emailVerified) window.location.href = "dashboard.html";
+  });
+
+  function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+  // ---------- REGISTER ----------
+  $("regBtn").addEventListener("click", function () {
+    hide($("regStatus"));
+    var name = $("rName").value.trim();
+    var email = $("rEmail").value.trim();
+    var p1 = $("rPass").value, p2 = $("rPass2").value;
+    var fFront = $("rIdFront").files[0], fBack = $("rIdBack").files[0];
+
+    if (name.length < 2) return show($("regStatus"), "Please enter your full name.", "err");
+    if (!validEmail(email)) return show($("regStatus"), "Please enter a valid email address.", "err");
+    if (p1.length < 6) return show($("regStatus"), "Password must be at least 6 characters.", "err");
+    if (p1 !== p2) return show($("regStatus"), "Passwords do not match.", "err");
+    if ((fFront && !fBack) || (!fFront && fBack)) return show($("regStatus"), "ID proof is optional. If you choose to upload it, select both front and back photos.", "err");
+
+    var btn = $("regBtn"); btn.disabled = true;
+    show($("regStatus"), "Creating your account…", "info");
+
+    fb.auth.createUserWithEmailAndPassword(email, p1)
+      .then(function (cred) {
+        var user = cred.user, uid = user.uid;
+        if (!fFront || !fBack) return { uid: uid, user: user, url1: null, url2: null };
+        show($("regStatus"), "Account created — uploading optional ID photos…", "info");
+        return new Promise(function (resolve, reject) {
+          QF.uploadIdDoc(fb, uid, "id-front", fFront, function (e1, url1) {
+            if (e1) return reject(e1);
+            QF.uploadIdDoc(fb, uid, "id-back", fBack, function (e2, url2) {
+              if (e2) return reject(e2);
+              resolve({ uid: uid, user: user, url1: url1, url2: url2 });
+            });
+          });
+        });
+      })
+      .then(function (r) {
+        show($("regStatus"), "Saving your profile…", "info");
+        return new Promise(function (resolve, reject) {
+          var profile = { name: name, createdAt: new Date().toISOString() };
+          if (r.url1 && r.url2) {
+            profile.idFrontURL = r.url1;
+            profile.idBackURL = r.url2;
+            profile.idUploadedAt = new Date().toISOString();
+          }
+          QF.saveProfile(fb, r.uid, profile, function (e) { e ? reject(e) : resolve(r); });
+        });
+      })
+      .then(function (r) { return r.user.sendEmailVerification().then(function () { return r; }); })
+      .then(function (r) {
+        return r.user.updateProfile({ displayName: $("rName").value.trim() }).catch(function () {});
+      })
+      .then(function () {
+        show($("regStatus"),
+          "✅ Done! We sent a verification link to your email — open it and tap the link, then log in here.", "ok");
+        btn.disabled = false;
+      })
+      .catch(function (e) {
+        btn.disabled = false;
+        var msg = "Could not create the account. Please try again.";
+        if (e.code === "auth/email-already-in-use") msg = "This email is already registered — please log in instead.";
+        else if (e.code === "auth/weak-password") msg = "Password is too weak — use at least 6 characters.";
+        else if (e.code === "auth/operation-not-allowed") msg = "Email/password sign-in is not enabled yet (see FIREBASE_SETUP.txt).";
+        show($("regStatus"), msg + " (" + (e.code || e.message) + ")", "err");
+      });
+  });
+
+  // ---------- LOGIN ----------
+  var pendingUser = null;
+  $("loginBtn").addEventListener("click", function () {
+    hide($("loginStatus")); $("resendBtn").style.display = "none";
+    var email = $("lEmail").value.trim(), pass = $("lPass").value;
+    if (!validEmail(email)) return show($("loginStatus"), "Please enter a valid email address.", "err");
+    if (!pass) return show($("loginStatus"), "Please enter your password.", "err");
+    var btn = $("loginBtn"); btn.disabled = true;
+    show($("loginStatus"), "Logging in…", "info");
+    fb.auth.signInWithEmailAndPassword(email, pass)
+      .then(function (cred) {
+        if (!cred.user.emailVerified) {
+          pendingUser = cred.user;
+          $("resendBtn").style.display = "inline";
+          show($("loginStatus"),
+            "Please verify your email first — open the verification link we sent you, then log in again.", "err");
+          return fb.auth.signOut();
+        }
+        window.location.href = "dashboard.html";
+      })
+      .catch(function (e) {
+        var msg = "Login failed. Please check your email and password.";
+        if (e.code === "auth/user-not-found") msg = "No account with this email — please register first.";
+        else if (e.code === "auth/wrong-password") msg = "Wrong password — try again or use Forgot.";
+        else if (e.code === "auth/too-many-requests") msg = "Too many attempts — please wait a few minutes.";
+        show($("loginStatus"), msg + " (" + e.code + ")", "err");
+      })
+      .finally(function () { btn.disabled = false; });
+  });
+
+  $("resendBtn").addEventListener("click", function () {
+    if (!pendingUser) return;
+    pendingUser.sendEmailVerification()
+      .then(function () { show($("loginStatus"), "Verification email re-sent — check your inbox.", "ok"); })
+      .catch(function (e) { show($("loginStatus"), "Could not resend. (" + e.code + ")", "err"); });
+  });
+
+  // ---------- FORGOT ----------
+  $("forgotBtn").addEventListener("click", function () {
+    hide($("forgotStatus"));
+    var email = $("fEmail").value.trim();
+    if (!validEmail(email)) return show($("forgotStatus"), "Please enter a valid email address.", "err");
+    var btn = $("forgotBtn"); btn.disabled = true;
+    show($("forgotStatus"), "Sending…", "info");
+    fb.auth.sendPasswordResetEmail(email)
+      .then(function () {
+        show($("forgotStatus"),
+          "✅ Reset link sent! Open your email and tap the link to set a new password.", "ok");
+        btn.disabled = false;
+      })
+      .catch(function (e) {
+        var msg = "Could not send the reset email.";
+        if (e.code === "auth/user-not-found") msg = "No account with this email — please register first.";
+        show($("forgotStatus"), msg + " (" + e.code + ")", "err");
+        btn.disabled = false;
+      });
+  });
+})();
+</script>
+</body>
+</html>

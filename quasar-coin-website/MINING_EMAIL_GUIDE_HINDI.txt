@@ -1,0 +1,56 @@
+Subject: ⛏️ Quasar Coin mining shuru karo — poora step-by-step guide
+(Phase C mein ye email registration + OTP ke baad AUTOMATIC jayega)
+
+---
+
+Namaste!
+
+Quasar Coin mein judne ke liye dhanyavaad. 🙏
+Neeche poori details hai — step-by-step follow karo, tumhara laptop mining start kar dega.
+(Ye one-click nahi hai — 10-15 minute lageinge — par har step likha hai, koi bhi kar sakta hai.)
+
+STEP 0 — Kya chahiye
+- Windows laptop, internet, charger laga ke rakho
+
+STEP 1 — Python install karo
+1. python.org kholo → Downloads → Windows → sabse naya Python 3.x download karo
+2. Install karte waqt "Add python.exe to PATH" pe TICK zaroor lagao (yeh bhoolna mat!)
+3. Check: cmd kholo, likho:  python --version
+   Number dikhna chahiye (jaise Python 3.12.1)
+
+STEP 2 — Miner download karo
+1. Is link se download karo: [MINER_DOWNLOAD_LINK]
+2. Zip pe right-click → "Extract All" → Extract
+
+STEP 3 — Wallet banao (pehli baar — sirf ek baar karna hai)
+1. Extract kiye hue folder mein cmd kholo
+2. Ye likho:  set QUASAR_DATA_DIR=quasar-seed
+3. Phir ye likho:  python quasar_cli.py new-address miner
+4. Tumhara address ban gaya (QU... se shuru hota hai). Yahi tumhara wallet hai — ise sambhal ke rakho!
+
+STEP 4 — Node start karo
+1. Usi cmd window mein likho:
+   python quasar_cli.py start-node --port 9333 --datadir quasar-seed
+2. Windows Firewall puche to "Allow access" dabao
+3. Jab quasar-node:9333> likha aaye — samjho node chal raha hai!
+   (Ye window band mat karo — minimize kar sakte ho.)
+
+STEP 5 — Mining start karo
+1. Node wali window (quasar-node:9333>) mein likho:  mine-auto miner
+2. Bas! Ab tumhara laptop khud-ba-khud mine karega — har ~60 second mein ek block.
+3. Rokne ke liye: Ctrl+C dabao.
+
+STEP 6 — Apne coin dekho
+- Node wali window mein likho:  balance miner
+- Har block pe ~38,025 QSR milte hain!
+
+⚠️ ZAROORI BAATEIN (dhyan se padho):
+- "set" wali line HAR NAYI cmd window mein dobara likhni padti hai.
+- mine / balance / quit jaise commands SIRF node wali window (quasar-node:9333>) mein chalte hain — normal cmd mein nahi.
+- Laptop hamesha SAKHT TABLE pe rakho (bistar/sofa pe nahi), charger laga ke.
+- Ye TESTNET hai — in coin ka koi asli daam (paisa) nahi hai. Koi inke naam pe paisa maange to dhokha hai!
+
+Koi problem aaye to is email ka reply kar do: s.ghatora1979@gmail.com
+
+Happy mining! ⛏️
+— Team Quasar Coin

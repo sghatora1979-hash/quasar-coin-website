@@ -1,0 +1,150 @@
+=====================================================================
+QUASAR COIN — Firebase (Google) setup — ~8 minutes, click only
+=====================================================================
+v6: full accounts — email + password, ID photo upload, email
+verification, forgot-password, and a Settings page (profile, email,
+phone, password). This file covers every Firebase step.
+
+---------------------------------------------------------------------
+STEP 1 — Create the project (2 min)
+---------------------------------------------------------------------
+1. Go to https://console.firebase.google.com  (log in with your Google account)
+2. Click "Add project" (or "Create a project")
+3. Name: quasar-coin   → Continue → Continue
+   (Google Analytics: you can turn it OFF — not needed)
+4. Wait ~30 seconds → "Your new project is ready" → Continue
+
+---------------------------------------------------------------------
+STEP 2 — Turn on EMAIL + PASSWORD login (1 min)   ★ CHANGED in v6 ★
+---------------------------------------------------------------------
+1. Left menu → Build → Authentication → "Get started"
+2. Top tab "Sign-in method" → click "Email/Password" → enable the
+   FIRST toggle ("Email/Password") → Save
+   (Leave the SECOND toggle "Email link (passwordless)" OFF — v6
+   uses password login + verification email instead.)
+3. Optional but recommended: Authentication → Templates →
+   "Email address verification" → you can edit the subject/sender
+   name here. (Free tier sends a verification LINK, not a 6-digit
+   OTP code. Numeric OTP needs a paid email service — link works
+   just as well and is 100% free.)
+
+---------------------------------------------------------------------
+STEP 3 — Create the database (1 min)
+---------------------------------------------------------------------
+1. Left menu → Build → Firestore Database → "Create database"
+2. "Start in production mode" → Next
+3. Location: choose the nearest (e.g. us-central / asia-south1) → Enable
+4. Top tab "Rules" → delete everything → paste the contents of
+   firestore.rules (in this website folder) → Publish
+   (v6 rules: users can read/write ONLY their own profile.)
+
+---------------------------------------------------------------------
+STEP 4 — Turn on file Storage for photos + ID docs (2 min)  ★ NEW ★
+---------------------------------------------------------------------
+1. Left menu → Build → Storage → "Get started"
+2. "Start in production mode" → Next → Done
+3. Top tab "Rules" → delete everything → paste the contents of
+   storage.rules (in this website folder) → Publish
+   (Rules: each user sees ONLY their own photos/ID docs. Nobody
+   else — not even other logged-in users — can open them.)
+4. Free tier: 5 GB storage — plenty for profile + ID photos.
+
+---------------------------------------------------------------------
+STEP 5 — Authorize your website address (30 sec, do when site is live)
+---------------------------------------------------------------------
+1. Authentication → Settings tab → "Authorized domains" → Add domain
+2. Add your website domain (e.g. your vercel.app address now,
+   quasar-coin.org later). Skip this while only testing locally.
+
+---------------------------------------------------------------------
+STEP 6 — Copy the web config into the site (1 min)
+---------------------------------------------------------------------
+1. Project settings (gear icon, top-left) → General → "Your apps"
+2. Click the web icon </> → nickname: quasar-web → Register app
+3. Copy the firebaseConfig values.
+4. Open config.js (in this website folder) and paste the 4 values:
+      apiKey, authDomain, projectId, appId
+   (Replace the PASTE_HERE placeholders. Save the file.)
+
+That's it — register.html (Register/Login/Forgot), settings.html and
+dashboard.html start working immediately. No code changes needed.
+
+---------------------------------------------------------------------
+STEP 7 — Connect YOUR laptop miner (so the LIVE stats move)
+---------------------------------------------------------------------
+1. In Firebase console → Project settings → "Your apps" → your web app
+   → copy the "Web API Key" (same as apiKey above).
+2. On your laptop, in the miner folder, create a file named
+   quasar-report.txt containing ONE line:
+
+   https://firestore.googleapis.com/v1/projects/PASTE_PROJECT_ID/databases/(default)/documents/reports?key=PASTE_API_KEY
+
+   (Replace PASTE_PROJECT_ID and PASTE_API_KEY with your values.)
+3. Double-click Quasar-Start-Mining.bat as usual.
+   From the next block on, the website's LIVE strip and dashboard
+   show your real blocks.
+
+---------------------------------------------------------------------
+WHAT USERS GET (v6)
+---------------------------------------------------------------------
+REGISTER tab: full name + email + password (created together). ID front/back photos
+  are optional; if both are selected, they are uploaded privately.
+  Account created → verification email sent → user taps link → can log in.
+LOGIN tab: email + password. Unverified emails are asked to verify
+  first (one-tap resend button included).
+FORGOT tab: email → password-reset link in email → set new password.
+SETTINGS page (login required):
+  • Profile: photo, full name, address, phone, second (backup) email
+  • Change email (verified via link to the new address)
+  • Change password (needs current password)
+  • ID documents: shows upload status (private to the user)
+  • Sign out
+
+---------------------------------------------------------------------
+NOTES
+---------------------------------------------------------------------
+- Free tier covers everything above (Auth, 1 GB Firestore, 5 GB Storage).
+- Verification/reset emails come from Google's servers
+  (noreply@your-project.firebaseapp.com). Custom "from" address is
+  a later upgrade, not needed for testing.
+- Phone SMS OTP is NOT included: Google charges for SMS.
+- ID photos: stored in Firebase Storage under kyc/{user-id}/ —
+  security rules allow ONLY that user to read them. This is real
+  identity data: keep the Firebase project private, never share the
+  console access, and never commit config.js with real keys to a
+  public GitHub repo.
+- Testnet — coins have no monetary value.
+=====================================================================
+
+---------------------------------------------------------------------
+PHASE 2 (jab domain kharid loge) — apne domain se email
+---------------------------------------------------------------------
+Abhi verification/reset emails Google ke address
+(noreply@<project>.firebaseapp.com) se aayenge — testing ke liye
+bilkul theek, free hai.
+
+Jab domain le loge, tab emails apne domain se bhej sakte ho:
+1. Firebase console → Authentication → Templates → kisi template par
+   pencil icon → "Customize domain"
+2. Apna domain likho → Firebase kuch DNS records dega
+   (TXT + 2 CNAME + SPF) → unhe domain ke DNS me add karo
+3. Verify → Apply. Bas — har email tumhare domain se aayega.
+Note: iske liye shayad Blaze plan chahiye (card add karna padta hai;
+free limit ke andar paise nahi lagte). Testing me iski zaroorat nahi.
+
+================================================================
+MINER APPROVAL (tumhara kaam — jab koi register kare)
+================================================================
+Jab koi user register + ID upload karega, uska miner download
+LOCKED rahega jab tak tum approve nahi karte. Approve kaise:
+
+1. console.firebase.google.com → tumhara project
+2. Firestore Database → "users" collection kholo
+3. Us user ke document par click karo
+4. "Add field" dabao:
+   Field: minerApproved | Type: boolean | Value: true
+   Field: minerApprovedAt | Type: string | Value: aaj ki date
+5. Save. Bas! Uska download turant unlock ho jayega.
+
+Reject karna ho to minerApproved = false kar do (ya field delete).
+User ki ID photos dekhne ke liye: Storage → "kyc" folder → uska ID.

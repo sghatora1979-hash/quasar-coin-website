@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quasar Coin — Technical Paper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF9F2;--bg2:#FFF3E2;--card:#FFFFFF;--o1:#FF6B1A;--o2:#FF9A3C;--amber:#FFB800;--ink:#2D1B0E;--mut:#7A5A3E;--line:rgba(255,107,26,.16)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7}
+h1,h2,h3,.pf{font-family:'Poppins',sans-serif}
+nav{position:sticky;top:0;z-index:60;display:flex;justify-content:space-between;align-items:center;padding:14px 28px;background:rgba(255,249,242,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.logo{font-family:'Poppins';font-weight:900;font-size:22px;background:linear-gradient(90deg,var(--o1),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;text-decoration:none}
+nav .links a{margin:0 11px;text-decoration:none;color:var(--ink);font-weight:600;font-size:15px}
+.wrap{max-width:960px;margin:0 auto;padding:0 22px}
+.hero{text-align:center;padding:70px 22px 46px;background:radial-gradient(700px 380px at 50% 0%,#FFE3C2 0%,transparent 60%),linear-gradient(180deg,#FFF6E9,var(--bg))}
+.eyebrow{display:inline-block;font-weight:700;font-size:13px;letter-spacing:2.5px;color:var(--o1);background:rgba(255,107,26,.1);padding:8px 20px;border-radius:999px;margin-bottom:16px;text-transform:uppercase}
+.hero h1{font-size:clamp(34px,5.5vw,58px);font-weight:900;line-height:1.12}
+.hero p{color:var(--mut);max-width:640px;margin:16px auto 0;font-size:16.5px}
+.meta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.meta span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:13.5px;font-weight:600}
+section{padding:44px 0;border-top:1px solid var(--line)}
+section:first-of-type{border-top:none}
+h2{font-size:clamp(24px,3.4vw,32px);font-weight:800;margin-bottom:6px}
+h2 .num{display:inline-block;background:linear-gradient(90deg,var(--o1),var(--amber));color:#fff;width:40px;height:40px;border-radius:12px;text-align:center;line-height:40px;font-size:20px;margin-right:10px;vertical-align:middle}
+.sub{color:var(--mut);margin-bottom:22px;max-width:700px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin:14px 0;box-shadow:0 4px 18px rgba(255,107,26,.06)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
+th{font-family:'Poppins';font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--o1)}
+tr:last-child td{border-bottom:none}
+.hl{background:linear-gradient(90deg,rgba(255,107,26,.12),rgba(255,184,0,.12));font-weight:700}
+.diagram{background:#2D1B0E;border-radius:16px;padding:26px 18px;margin:16px 0;overflow-x:auto}
+.diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.tcard b{font-family:'Poppins'}
+.warn{background:#FFF4E0;border:1px solid #E8A33D;border-radius:12px;padding:16px 18px;margin:16px 0;font-size:14.5px}
+ul.check{list-style:none;margin:10px 0}
+ul.check li{padding:7px 0 7px 34px;position:relative}
+ul.check li:before{content:"";position:absolute;left:4px;top:12px;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--o1),var(--amber))}
+footer{background:#2D1B0E;color:#FFD9A0;padding:40px 22px;margin-top:30px;font-size:14px}
+footer .wrap{max-width:960px}
+footer a{color:#FFB800}
+.btn{display:inline-block;background:linear-gradient(90deg,var(--o1),var(--o2));color:#fff!important;text-decoration:none;font-weight:700;padding:13px 30px;border-radius:999px;box-shadow:0 6px 16px rgba(255,107,26,.35);margin-top:10px}
+.center{text-align:center}
+.copy{margin-top:26px;padding-top:18px;border-top:1px solid rgba(255,217,160,.2);font-size:13px;color:#C9A06A}
+@media(max-width:640px){nav .links a{margin:0 6px;font-size:13.5px}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">QUASAR</a>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="paper.html">Paper</a>
+    <a href="register.html">Register</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <span class="eyebrow">Official Document</span>
+  <h1>Quasar Coin<br>Technical Paper</h1>
+  <p>How Quasar works: mining, coin creation, halving, distribution, and the road ahead. Written by the Quasar team — our design, our concept.</p>
+  <div class="meta"><span>Version 1.0</span><span>14 October 2026</span><span>© 2026 Quasar Coin</span></div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2><span class="num">1</span>The Concept</h2>
+  <p class="sub">Quasar is an independent digital-coin system designed from scratch by our team: a mining-based coin with a fixed supply, a transparent three-phase emission schedule, and a short, honest founder vesting. No premine trading, no hidden issuance — every rule below is enforced by the software itself.</p>
+  <div class="tgrid">
+    <div class="tcard"><b>30-second blocks</b><p style="color:var(--mut);font-size:14px;margin-top:6px">A new block is created roughly every 30 seconds, day and night.</p></div>
+    <div class="tcard"><b>500B hard cap</b><p style="color:var(--mut);font-size:14px;margin-top:6px">No more than 500 billion QSR can ever exist. The limit is in the code.</p></div>
+    <div class="tcard"><b>Laptop mining</b><p style="color:var(--mut);font-size:14px;margin-top:6px">Designed so an ordinary laptop can mine. No special hardware required to start.</p></div>
+    <div class="tcard"><b>1-week vesting</b><p style="color:var(--mut);font-size:14px;margin-top:6px">The founder allocation unlocks over one week — then it is fully in circulation logic.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">2</span>How Mining Works</h2>
+  <p class="sub">Mining is a fair lottery run by mathematics. Every computer on the network competes to solve a cryptographic puzzle; the winner's block is added to the chain and new coins are created as its reward.</p>
+  <div class="diagram">
+  <svg width="860" height="210" viewBox="0 0 860 210" font-family="Inter,sans-serif">
+    <defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#FFB800"/></marker></defs>
+    <rect x="10" y="60" width="170" height="90" rx="14" fill="#4A2C14" stroke="#FF9A3C"/>
+    <text x="95" y="95" fill="#FFD9A0" font-size="15" font-weight="700" text-anchor="middle">Your laptop</text>
+    <text x="95" y="120" fill="#C9A06A" font-size="12.5" text-anchor="middle">solves the hash puzzle</text>
+    <line x1="180" y1="105" x2="225" y2="105" stroke="#FFB800" stroke-width="2.5" marker-end="url(#ar)"/>
+    <rect x="225" y="60" width="170" height="90" rx="14" fill="#4A2C14" stroke="#FF9A3C"/>
+    <text x="310" y="95" fill="#FFD9A0" font-size="15" font-weight="700" text-anchor="middle">Puzzle solved</text>
+    <text x="310" y="120" fill="#C9A06A" font-size="12.5" text-anchor="middle">hash starts with 000</text>
+    <line x1="395" y1="105" x2="440" y2="105" stroke="#FFB800" stroke-width="2.5" marker-end="url(#ar)"/>
+    <rect x="440" y="60" width="170" height="90" rx="14" fill="#4A2C14" stroke="#FF9A3C"/>
+    <text x="525" y="95" fill="#FFD9A0" font-size="15" font-weight="700" text-anchor="middle">Block added</text>
+    <text x="525" y="120" fill="#C9A06A" font-size="12.5" text-anchor="middle">linked to the chain</text>
+    <line x1="610" y1="105" x2="655" y2="105" stroke="#FFB800" stroke-width="2.5" marker-end="url(#ar)"/>
+    <rect x="655" y="60" width="195" height="90" rx="14" fill="#6B3D10" stroke="#FFB800"/>
+    <text x="752" y="95" fill="#FFE9C4" font-size="15" font-weight="700" text-anchor="middle">50,000 QSR created</text>
+    <text x="752" y="120" fill="#FFD9A0" font-size="12.5" text-anchor="middle">paid to miner's wallet</text>
+    <text x="430" y="30" fill="#FFD9A0" font-size="13" text-anchor="middle">~ every 30 seconds, automatic difficulty keeps the pace</text>
+  </svg>
+  </div>
+  <div class="card">
+    <b>The puzzle, in plain words.</b> Each block's data is hashed (SHA-256). The hash must begin with a set number of zeros. There is no shortcut — the only way is to try nonces one by one until a valid hash appears. A faster computer tries more per second, so it wins more often — but <b>the reward per block never changes</b>. More miners do not create more coins; they share the same fixed schedule.
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">3</span>How Coins Are Created</h2>
+  <p class="sub">New QSR is created only as mining rewards, on a fixed three-phase schedule. The schedule is a pure function of block height — it cannot be changed by any miner, including the founder.</p>
+  <table>
+    <tr><th>Phase</th><th>Reward / block</th><th>Blocks</th><th>Duration</th><th>Coins created</th></tr>
+    <tr class="hl"><td>1</td><td>50,000 QSR</td><td>6,000,000</td><td>~5.7 years</td><td>300,000,000,000</td></tr>
+    <tr><td>2 — first halving</td><td>25,000 QSR</td><td>2,629,800</td><td>2.5 years</td><td>65,745,000,000</td></tr>
+    <tr><td>3 — second halving</td><td>12,500 QSR</td><td>2,629,800</td><td>2.5 years</td><td>32,872,500,000</td></tr>
+    <tr><td>End</td><td>0 QSR</td><td>—</td><td>forever</td><td>mining stops</td></tr>
+  </table>
+  <div class="diagram">
+  <svg width="860" height="150" viewBox="0 0 860 150" font-family="Inter,sans-serif">
+    <rect x="10" y="55" width="440" height="44" rx="10" fill="#FF6B1A"/>
+    <text x="230" y="82" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">Phase 1 · 50,000/block · 300B · ~5.7 yrs</text>
+    <rect x="450" y="55" width="195" height="44" rx="10" fill="#FF9A3C"/>
+    <text x="547" y="82" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">Phase 2 · 25,000 · 2.5 yrs</text>
+    <rect x="645" y="55" width="150" height="44" rx="10" fill="#FFB800"/>
+    <text x="720" y="82" fill="#5A3208" font-size="13" font-weight="700" text-anchor="middle">Ph.3 · 12,500 · 2.5y</text>
+    <rect x="795" y="55" width="55" height="44" rx="10" fill="#3A2412"/>
+    <text x="822" y="82" fill="#C9A06A" font-size="13" font-weight="700" text-anchor="middle">0</text>
+    <text x="230" y="125" fill="#C9A06A" font-size="12.5" text-anchor="middle">blocks 0 – 5,999,999</text>
+    <text x="547" y="125" fill="#C9A06A" font-size="12.5" text-anchor="middle">6,000,000 – 8,629,799</text>
+    <text x="720" y="125" fill="#C9A06A" font-size="12.5" text-anchor="middle">8,629,800 – 11,259,599</text>
+    <text x="430" y="28" fill="#FFD9A0" font-size="13" text-anchor="middle">Total mined: exactly 398,617,500,000 QSR — then issuance ends forever</text>
+  </svg>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">4</span>Halving — How and When</h2>
+  <p class="sub">Halving is triggered by <b>coins mined (block height)</b>, never by calendar date. When block 6,000,000 arrives, the reward halves to 25,000; at block 8,629,800 it halves again to 12,500. Because block time is held at ~30 seconds by difficulty adjustment, the phases last ~5.7, 2.5 and 2.5 years — but if mining ever slowed, halving would simply wait for the coins. Joining miners cannot shorten a phase; they only share its fixed rewards.</p>
+</section>
+
+<section>
+  <h2><span class="num">5</span>Supply &amp; Distribution</h2>
+  <table>
+    <tr><th>Allocation</th><th>Amount (QSR)</th><th>How it enters circulation</th></tr>
+    <tr class="hl"><td>Mining rewards</td><td>398,617,500,000</td><td>Block rewards over ~10.7 years (schedule above)</td></tr>
+    <tr><td>Founder allocation</td><td>100,000,000,000</td><td>Linear vesting over 1 week; manual claim only</td></tr>
+    <tr><td><b>Total</b></td><td><b>498,617,500,000</b></td><td><b>Under the 500,000,000,000 hard cap</b></td></tr>
+  </table>
+  <div class="card"><b>No hidden issuance.</b> There is no function anywhere in the Quasar software that creates coins outside (a) the mining schedule above or (b) the single disclosed founder allocation. Every node independently validates every block reward and every founder claim, and rejects anything beyond the schedule.</div>
+</section>
+
+<section>
+  <h2><span class="num">6</span>Founder Allocation &amp; Vesting</h2>
+  <p class="sub">100 billion QSR (20% of the cap) is reserved as a transparent founder allocation. It is <b>not</b> mined and no founder reward is paid on mining blocks. It unlocks linearly over <b>one week</b> (20,160 blocks at 30 seconds each) and can only be claimed manually, up to the unlocked amount. After one week the full allocation is unlocked.</p>
+</section>
+
+<section>
+  <h2><span class="num">7</span>The Network</h2>
+  <ul class="check">
+    <li><b>Peer-to-peer.</b> Every computer runs the same software and shares blocks directly (port 9333). There is no central server that can be switched off.</li>
+    <li><b>Every node validates everything.</b> Block hashes, proof-of-work, reward amounts, founder claims and signatures are re-checked by each node.</li>
+    <li><b>Difficulty self-adjusts.</b> Every 10 blocks the network retargets difficulty toward the 30-second pace — the schedule's timing holds no matter how many miners join.</li>
+    <li><b>Wallets.</b> Real cryptographic keypairs; addresses begin with Q. Your private key never leaves your device.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">8</span>Using QSR</h2>
+  <p class="sub">QSR lives in wallets and moves address-to-address with signed transactions — no bank in between. The practical economy is being built in stages:</p>
+  <ul class="check">
+    <li><b>Today:</b> mine on a laptop, hold in the wallet, transfer to any Q address.</li>
+    <li><b>Next:</b> verified sellers accept mined QSR for real gadgets, ordered over WhatsApp/Telegram — buyer sends QSR, seller ships.</li>
+    <li><b>Later:</b> exchange listing, so QSR can trade on the open market.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">9</span>Community &amp; Growth Plan</h2>
+  <p class="sub">A coin is only as strong as its community. The rollout plan:</p>
+  <ul class="check">
+    <li><b>Phase 1 — now:</b> the founder's node mines and secures the chain; the website onboards the first users.</li>
+    <li><b>Phase 2 — Oct–Dec:</b> 10–15 community laptops join mining; sellers are verified for the gadget program.</li>
+    <li><b>Phase 3:</b> public launch with one-click mining; referrals and community rewards grow the network.</li>
+    <li><b>Phase 4:</b> exchange listing.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">10</span>Value Design</h2>
+  <p class="sub">Quasar's economics are designed around scarcity and utility:</p>
+  <ul class="check">
+    <li><b>Fixed cap.</b> At most 500B QSR can ever exist; actual issuance is 498.6B.</li>
+    <li><b>Decreasing new supply.</b> Halvings cut new coins per block from 50,000 to 25,000 to 12,500 — then to zero.</li>
+    <li><b>Growing utility.</b> As more people mine, hold, and spend QSR (gadgets, transfers), demand is driven by real use.</li>
+  </ul>
+  <div class="warn"><b>Honest note.</b> These are design mechanics, not promises. QSR currently has no market price and no monetary value. Never buy, mine, or hold any coin based on expected price gains — only on your own judgment of its utility and design.</div>
+</section>
+
+<section>
+  <h2><span class="num">11</span>Intellectual Property</h2>
+  <div class="card">
+    <b>© 2026 Quasar Coin. All rights reserved.</b><br><br>
+    The Quasar Coin software, this paper, the website content, and all related materials are the original work of the Quasar team. The Quasar design — including its three-phase emission schedule, one-week vesting model, and network protocol — is proprietary to the Quasar project.<br><br>
+    The Quasar team intends to seek patent protection for the novel elements of this design. Patent-pending notices will be published on this page as applications are filed. Until then, all rights are reserved under applicable copyright law. Unauthorized reproduction of this paper or the website content is prohibited.
+  </div>
+</section>
+
+<section class="center">
+  <h2><span class="num">12</span>Downloads</h2>
+  <p class="sub" style="margin-left:auto;margin-right:auto">Get the Quasar miner and join the network. Full setup guide is on the <a href="index.html">home page</a>.</p>
+  <a class="btn" href="register.html">Register to download the miner</a>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <b style="font-family:'Poppins'">QUASAR COIN</b>
+    <p style="margin-top:10px">Testnet software. Coins have no monetary value. Nothing on this page is financial advice or a promise of future value. Mining involves computer heat, fan noise, and electricity use.</p>
+    <p class="copy">© 2026 Quasar Coin. All rights reserved. · <a href="paper.html">Technical Paper</a> · <a href="index.html">Home</a></p>
+  </div>
+</footer>
+</body>
+</html>
