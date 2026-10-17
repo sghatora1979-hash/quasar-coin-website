@@ -92,7 +92,7 @@ footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top
   <div class="card">
     <span class="eyebrow">Join Quasar</span>
     <h1>Your account</h1>
-    <p class="sub">Register with email + password and ID proof, or log in.</p>
+    <p class="sub">Register with your email and password, or log in.</p>
 
     <div class="tabs">
       <button class="tab active" id="tabReg">Register</button>
@@ -121,18 +121,18 @@ footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top
         <button class="eye" data-for="rPass2" type="button">👁️</button>
       </div>
 
-      <label>ID proof — front photo</label>
+      <label>ID proof — front photo (optional)</label>
       <div class="filebox" id="boxFront">📷 Tap to choose front photo of your ID
         <input type="file" id="rIdFront" accept="image/*">
         <div class="fname" id="nameFront"></div>
       </div>
 
-      <label>ID proof — back photo</label>
+      <label>ID proof — back photo (optional)</label>
       <div class="filebox" id="boxBack">📷 Tap to choose back photo of your ID
         <input type="file" id="rIdBack" accept="image/*">
         <div class="fname" id="nameBack"></div>
       </div>
-      <p class="hint">Your ID photos are stored privately — only you can see them. Never shared.</p>
+      <p class="hint">ID photos are optional. Upload both only if you specifically want to provide them; do not upload sensitive documents unless necessary.</p>
 
       <button class="btn" id="regBtn">Create my account</button>
       <div class="status" id="regStatus"></div>
@@ -230,7 +230,7 @@ footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top
     if (!validEmail(email)) return show($("regStatus"), "Please enter a valid email address.", "err");
     if (p1.length < 6) return show($("regStatus"), "Password must be at least 6 characters.", "err");
     if (p1 !== p2) return show($("regStatus"), "Passwords do not match.", "err");
-    if (!fFront || !fBack) return show($("regStatus"), "Please upload both front and back photos of your ID.", "err");
+    if ((fFront && !fBack) || (!fFront && fBack)) return show($("regStatus"), "ID proof is optional. If you choose to upload it, select both front and back photos.", "err");
 
     var btn = $("regBtn"); btn.disabled = true;
     show($("regStatus"), "Creating your account…", "info");
@@ -238,7 +238,8 @@ footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top
     fb.auth.createUserWithEmailAndPassword(email, p1)
       .then(function (cred) {
         var user = cred.user, uid = user.uid;
-        show($("regStatus"), "Account created — uploading your ID photos…", "info");
+        if (!fFront || !fBack) return { uid: uid, user: user, url1: null, url2: null };
+        show($("regStatus"), "Account created — uploading optional ID photos…", "info");
         return new Promise(function (resolve, reject) {
           QF.uploadIdDoc(fb, uid, "id-front", fFront, function (e1, url1) {
             if (e1) return reject(e1);
@@ -252,12 +253,13 @@ footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top
       .then(function (r) {
         show($("regStatus"), "Saving your profile…", "info");
         return new Promise(function (resolve, reject) {
-          QF.saveProfile(fb, r.uid, {
-            name: name,
-            idFrontURL: r.url1, idBackURL: r.url2,
-            idUploadedAt: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
-          }, function (e) { e ? reject(e) : resolve(r); });
+          var profile = { name: name, createdAt: new Date().toISOString() };
+          if (r.url1 && r.url2) {
+            profile.idFrontURL = r.url1;
+            profile.idBackURL = r.url2;
+            profile.idUploadedAt = new Date().toISOString();
+          }
+          QF.saveProfile(fb, r.uid, profile, function (e) { e ? reject(e) : resolve(r); });
         });
       })
       .then(function (r) { return r.user.sendEmailVerification().then(function () { return r; }); })

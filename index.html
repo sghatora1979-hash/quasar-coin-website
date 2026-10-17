@@ -370,7 +370,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <section id="mining" class="rv">
 <span class="eyebrow eyebrow2">⛏️ Mining</span>
 <h2 class="st">Start mining in 3 steps</h2>
-<p class="cs"><b>Honest note:</b> real mining happens by running the program on your laptop — not from a website button.</p>
+<p class="cs"><b>Note:</b> you can mine right here in your browser with one click (lighter web mode). The laptop program is optional for heavier mining.</p>
 <div class="card rv" style="margin-bottom:18px;border:2px solid var(--o1);background:linear-gradient(180deg,#FFF6E9,#fff)">
   <div class="stephead"><div class="big">⚡</div><h3>Start mining in 3 clicks — no typing, no black window!</h3></div>
   <ol class="steps">
@@ -404,8 +404,9 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
     return '<div class="card" style="margin:12px 0 0;padding:14px 18px;background:rgba(255,255,255,.7)">' + inner + '</div>';
   }
   function startBtn(){
-    return '<a class="btn" style="font-size:20px;padding:16px 46px;margin:14px 0 0;background:linear-gradient(180deg,#FFD54A,#F5A623);border:2px solid #B87700;box-shadow:0 4px 18px rgba(245,166,35,.45);color:#3A2500" href="Quasar-Miner-OneClick-GUI.zip" download>⚡ START MINING</a>'
-      + '<p style="color:var(--mut);font-size:13px;margin:10px 0 0">Downloads the one-click miner for Windows.<br>Extract the zip → double-click <b>Start-Quasar-Mining.vbs</b> → press START MINING in the app. No typing, no black window.</p>';
+    return '<a class="btn" style="font-size:20px;padding:16px 46px;margin:14px 0 0;background:linear-gradient(180deg,#FFD54A,#F5A623);border:2px solid #B87700;box-shadow:0 4px 18px rgba(245,166,35,.45);color:#3A2500" href="dashboard.html#webMiner">⚡ START MINING</a>'
+      + '<p style="color:var(--mut);font-size:13px;margin:10px 0 0">One click — mining runs in your browser. No download, no install.</p>'
+      + '<p style="font-size:13px;margin:10px 0 0"><a href="Quasar-Miner-OneClick-GUI.zip" download style="color:var(--o1);font-weight:700">⬇️ Or download the laptop miner</a> <span style="color:var(--mut)">(heavier mining, joins the real P2P network)</span></p>';
   }
   function renderGates(){
     var g1 = document.getElementById('minerGate1'), g2 = document.getElementById('minerGate2');

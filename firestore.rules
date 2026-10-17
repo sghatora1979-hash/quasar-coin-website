@@ -2,24 +2,29 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Miner reports: anyone can READ (live stats on the website).
-    // Writes: only new docs with the exact 4 fields (miner, height, hash, ts).
-    // No updates, no deletes — history is append-only.
+    // Public testnet telemetry. Reports are append-only and strictly typed.
+    // This is not a consensus/ledger source: never credit coin balances from these reports.
     match /reports/{docId} {
       allow read: if true;
       allow create: if request.resource.data.keys().hasAll(['miner', 'height', 'hash', 'ts'])
+                    && request.resource.data.keys().hasOnly(['miner', 'height', 'hash', 'ts'])
+                    && request.resource.data.miner is string
+                    && request.resource.data.miner.size() > 0
+                    && request.resource.data.miner.size() <= 128
                     && request.resource.data.height is int
-                    && request.resource.data.ts is int;
+                    && request.resource.data.height >= 0
+                    && request.resource.data.hash is string
+                    && request.resource.data.hash.size() <= 256
+                    && request.resource.data.ts is int
+                    && request.resource.data.ts > 0;
       allow update, delete: if false;
     }
 
-    // User profiles: each user reads/writes ONLY their own profile.
-    // Used by register (name + ID photo URLs), settings (profile edits).
+    // User profiles: each authenticated user can access only their own profile.
     match /users/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
     }
 
-    // Everything else: closed.
     match /{document=**} {
       allow read, write: if false;
     }

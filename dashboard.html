@@ -12,6 +12,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="config.js"></script>
 <script src="qfirebase.js"></script>
+<script src="web-miner.js"></script>
 <style>
 :root{
   --bg:#FFF9F2; --bg2:#FFF3E2; --card:#FFFFFF;
@@ -97,14 +98,12 @@ footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top
     <p class="s" id="stNote" style="font-size:12.5px;color:var(--mut);margin-top:10px"></p>
   </div>
 
-  <div class="card" style="border:2px solid var(--o1)">
-    <h2>⚡ Start mining in 2 clicks</h2>
-    <ol class="steps">
-      <li><b>Click 1:</b> download the miner, right-click the zip → <b>Extract All</b>.</li>
-      <li><b>Click 2:</b> double-click <code>Quasar-Start-Mining.bat</code>. No typing — everything is automatic.</li>
-    </ol>
-    <a class="btn" href="Quasar-Miner-OneClick.zip" download>⬇️ Download One-Click Miner</a>
-    <p style="font-size:13.5px;color:var(--mut);margin-top:10px">Your laptop joins the network above — watch the block height move live. Keep the window open while mining; close it to stop (coins stay saved).</p>
+  <div class="card" id="webMiner" style="border:2px solid var(--o1)"></div>
+
+  <div class="card">
+    <h2>💻 Prefer the laptop miner? (heavier mining)</h2>
+    <p class="sub" style="margin-bottom:8px">The Windows program joins the real P2P network and mines the same chain as the seed node. Extract the zip → double-click <b>Start-Quasar-Mining.vbs</b> → press START MINING. No typing, no black window.</p>
+    <a class="btn" href="Quasar-Miner-OneClick-GUI.zip" download>⬇️ Download One-Click Miner (Windows)</a>
   </div>
 
   <div class="card" style="border:2px solid var(--ok)">
@@ -122,11 +121,11 @@ footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top
   <div class="card">
     <h2>👛 My Wallet</h2>
     <div class="stats">
-      <div class="stat"><div class="l">Balance</div><div class="v" id="wBal">—</div><div class="s">QSR · reported by your miner</div></div>
+      <div class="stat"><div class="l">Balance</div><div class="v" id="wBal">—</div><div class="s">QSR · web-mined on this account</div></div>
       <div class="stat"><div class="l">Rewards earned</div><div class="v" id="wRew">—</div><div class="s">blocks found by you</div></div>
     </div>
     <table>
-      <tr><td>My wallet address</td><td id="wAddr" style="font-size:12.5px;word-break:break-all">created on your laptop when the miner first runs</td></tr>
+      <tr><td>My wallet address</td><td id="wAddr" style="font-size:12.5px;word-break:break-all">created automatically when you press START MINING</td></tr>
     </table>
     <div class="note" style="margin-bottom:0"><b>🔑 Backup:</b> your wallet is a file on your laptop (<code>QuasarData\wallets\</code>). Copy it to a USB drive — anyone with this file controls your coins. Never share it with anyone, not even us.<br><br><b>12-word recovery phrase:</b> arrives with the mobile app — <span style="background:var(--o1);color:#fff;font-size:11.5px;font-weight:700;padding:3px 12px;border-radius:999px">COMING SOON</span></div>
     <p class="s" id="wNote" style="font-size:12.5px;color:var(--mut);margin-top:10px">Your miner reports earnings here automatically once it connects.</p>
@@ -173,6 +172,7 @@ footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top
     document.getElementById("loading").style.display = "none";
     document.getElementById("dash").style.display = "block";
     document.getElementById("emailShown").textContent = user.email || "";
+    if (!window.__wm) { window.__wm = 1; QWebMiner.mount(document.getElementById("webMiner"), fb, user); }
     document.getElementById("userEmail").textContent = user.email || "";
     var nm = window.localStorage.getItem("quasarName") || (user.displayName || "");
     if (nm) {
