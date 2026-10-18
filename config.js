@@ -10,7 +10,7 @@
    ============================================================ */
 
 var QUASAR_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDTY9izLc8bU4iEVaF-uQsNYX_hDQE70vo",
+  apiKey: "AIzaSyDTY9izLc8bU4iFVaF-uQsNYX_hDQE70vo",
   authDomain: "starting-3429c.firebaseapp.com",
   projectId: "starting-3429c",
   appId: "1:763435459868:web:0aad34068ae177217e06d9"
