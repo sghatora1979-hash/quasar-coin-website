@@ -87,9 +87,9 @@ STEP 7 — Connect YOUR laptop miner (so the LIVE stats move)
 ---------------------------------------------------------------------
 WHAT USERS GET (v6)
 ---------------------------------------------------------------------
-REGISTER tab: full name + email + password (created together). ID front/back photos
-  are optional; if both are selected, they are uploaded privately.
-  Account created → verification email sent → user taps link → can log in.
+REGISTER tab: full name + email + password (created together) +
+  ID front photo + ID back photo → account created → verification
+  email sent → user taps link → can log in.
 LOGIN tab: email + password. Unverified emails are asked to verify
   first (one-tap resend button included).
 FORGOT tab: email → password-reset link in email → set new password.

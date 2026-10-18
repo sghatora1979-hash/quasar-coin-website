@@ -102,8 +102,23 @@ footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top
 
   <div class="card">
     <h2>💻 Prefer the laptop miner? (heavier mining)</h2>
-    <p class="sub" style="margin-bottom:8px">The Windows program joins the real P2P network and mines the same chain as the seed node. Extract the zip → double-click <b>Start-Quasar-Mining.vbs</b> → press START MINING. No typing, no black window.</p>
+    <p class="sub" style="margin-bottom:8px">The Windows program joins the real P2P network and mines the same chain as the seed node. Extract the zip → double-click <b>START-MINING.bat</b> → press START MINING. No typing, no black window, no PowerShell. Seed address is already filled in.</p>
     <a class="btn" href="Quasar-Miner-OneClick-GUI.zip" download>⬇️ Download One-Click Miner (Windows)</a>
+  </div>
+
+  <div class="card" id="myMinerCard" style="border:2px solid var(--o1)">
+    <h2>⛏️ My Miner — control your laptop from here</h2>
+    <p class="sub" id="myMinerSub" style="margin-bottom:8px">Looking for your laptop miner…</p>
+    <div id="myMinerLive" style="display:none">
+      <div class="stats">
+        <div class="stat"><div class="l">Local block</div><div class="v" id="lmHeight">—</div><div class="s">real chain</div></div>
+        <div class="stat"><div class="l">Local balance</div><div class="v" id="lmBalance">—</div><div class="s">QSR · this laptop's wallet</div></div>
+      </div>
+      <div style="margin-top:10px">
+        <button class="btn" id="lmStart" style="margin-right:8px">▶ START MINING</button>
+        <button class="btn" id="lmStop">⏹ STOP</button>
+      </div>
+    </div>
   </div>
 
   <div class="card" style="border:2px solid var(--ok)">
@@ -205,6 +220,54 @@ footer{padding:22px;text-align:center;color:var(--mut);font-size:13px;border-top
   }
   refreshStats();
   setInterval(refreshStats, 30000);
+})();
+</script>
+<script>
+/* My Miner bridge: the v2 laptop miner runs a tiny local server at
+   http://127.0.0.1:9334 (localhost is a secure context, so this HTTPS
+   page is allowed to reach it). If it answers, the dashboard controls
+   the laptop miner - no folder to open, ever. */
+(function () {
+  "use strict";
+  var BASE = "http://127.0.0.1:9334";
+  var sub = document.getElementById("myMinerSub");
+  var live = document.getElementById("myMinerLive");
+  if (!sub || !live) return;
+
+  function showDown() {
+    live.style.display = "none";
+    sub.innerHTML = "No laptop miner detected on this computer yet. " +
+      "One-time setup: download the One-Click Miner above, extract it, " +
+      "double-click <b>START-MINING.bat</b> once — after that, control it from here. " +
+      "Tick “Start mining automatically with Windows” in the miner and you will never open its folder again.";
+  }
+
+  function showUp(j) {
+    sub.textContent = j.mining
+      ? "Connected — your laptop is mining the real chain."
+      : "Connected — miner is idle. Press START MINING.";
+    live.style.display = "block";
+    document.getElementById("lmHeight").textContent = j.height || "—";
+    document.getElementById("lmBalance").textContent = j.balance || "—";
+    document.getElementById("lmStart").disabled = !!j.mining;
+    document.getElementById("lmStop").disabled = !j.mining;
+  }
+
+  function tick() {
+    fetch(BASE + "/status", { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(showUp)
+      .catch(showDown);
+  }
+
+  function post(path) {
+    fetch(BASE + path, { method: "POST" }).then(tick).catch(tick);
+  }
+  document.getElementById("lmStart").addEventListener("click", function () { post("/start"); });
+  document.getElementById("lmStop").addEventListener("click", function () { post("/stop"); });
+
+  tick();
+  setInterval(tick, 10000);
 })();
 </script>
 </body>
