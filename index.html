@@ -351,6 +351,7 @@ document.querySelectorAll('.q3dscene').forEach(function(scene){
       ctx.beginPath();ctx.arc(x,y,p.s,0,7);ctx.fill();}
     ctx.globalAlpha=1;requestAnimationFrame(tick);})();
 });
+}
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initQ3D);}else{initQ3D();}
 })();
 </script>
@@ -369,20 +370,25 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 
 <section id="mining" class="rv">
 <span class="eyebrow eyebrow2">⛏️ Mining</span>
-<h2 class="st">Start mining in 3 steps</h2>
-<p class="cs"><b>Note:</b> you can mine right here in your browser with one click (lighter web mode). The laptop program is optional for heavier mining.</p>
+<h2 class="st">Start mining — pick one</h2>
+<p class="cs"><b>Option A</b> mines right in your browser (1 click, no download). <b>Option B</b> is the laptop program (3 clicks, heavier mining, joins the real P2P network). No typing, no black window — ever.</p>
 <div class="card rv" style="margin-bottom:18px;border:2px solid var(--o1);background:linear-gradient(180deg,#FFF6E9,#fff)">
-  <div class="stephead"><div class="big">⚡</div><h3>Start mining in 3 clicks — no typing, no black window!</h3></div>
+  <div class="stephead"><div class="big">🌐</div><h3>Option A: mine in your browser — 1 click</h3></div>
+  <p style="color:var(--mut)">No download, no install. Press START MINING below and mining runs in the background of this page — keep the tab open while mining.</p>
+  <div id="minerGate1"></div>
+</div>
+<div class="card rv" style="margin-bottom:18px">
+  <div class="stephead"><div class="big">💻</div><h3>Option B: laptop miner — 3 clicks</h3></div>
   <ol class="steps">
     <li><b>Click 1:</b> download the miner below, then right-click the zip → <b>Extract All</b>.</li>
     <li><b>Click 2:</b> in the extracted folder, <b>double-click <code>Start-Quasar-Mining.vbs</code></b> — the mining window opens.</li>
-    <li><b>Click 3:</b> press the big gold <b>START MINING</b> button. That's it!</li>
+    <li><b>Click 3:</b> press the big gold <b>START MINING</b> button. That’s it!</li>
   </ol>
-  <p class="seeyou">👀 Behind the scenes (you don't type anything):</p>
-  <code class="cmd">Python check → auto-installs if missing → installs what's needed → creates your wallet → miner starts hidden</code>
-  <p style="color:var(--mut);margin-top:8px">The window shows <b>live</b>: block number growing + your QSR balance — about one block every ~30 seconds, coins go to your wallet automatically. Press STOP or close the window to stop; your coins stay saved.</p>
-  <div id="minerGate1"></div>
-  <p class="cs" style="margin-top:10px">📖 Prefer step-by-step? The full 6-step guide is right below.</p>
+  <p class="seeyou">👀 Behind the scenes (you don’t type anything):</p>
+  <code class="cmd">Python check → auto-installs if missing → creates your wallet → miner starts</code>
+  <p style="color:var(--mut);margin-top:8px">The window shows <b>live</b>: block number growing + your QSR balance — about one block every ~30 seconds. Press STOP or close the window to stop; your coins stay saved.</p>
+  <p style="color:var(--mut);font-size:13px">⚠️ Honest note: no website can start a program on your laptop by itself — browsers block it for safety. That’s why the laptop miner needs these 3 clicks from you.</p>
+  <div id="minerGate2"></div>
 </div>
 <div class="card rv" id="liveStrip" style="margin-bottom:18px;display:none">
   <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
@@ -403,33 +409,39 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
   function gateHTML(inner){
     return '<div class="card" style="margin:12px 0 0;padding:14px 18px;background:rgba(255,255,255,.7)">' + inner + '</div>';
   }
-  function startBtn(){
+  function browserBtn(){
     return '<a class="btn" style="font-size:20px;padding:16px 46px;margin:14px 0 0;background:linear-gradient(180deg,#FFD54A,#F5A623);border:2px solid #B87700;box-shadow:0 4px 18px rgba(245,166,35,.45);color:#3A2500" href="dashboard.html#webMiner">⚡ START MINING</a>'
-      + '<p style="color:var(--mut);font-size:13px;margin:10px 0 0">One click — mining runs in your browser. No download, no install.</p>'
-      + '<p style="font-size:13px;margin:10px 0 0"><a href="Quasar-Miner-OneClick-GUI.zip" download style="color:var(--o1);font-weight:700">⬇️ Or download the laptop miner</a> <span style="color:var(--mut)">(heavier mining, joins the real P2P network)</span></p>';
+      + '<p style="color:var(--mut);font-size:13px;margin:10px 0 0">One click — mining runs in your browser. No download, no install. Keep the tab open.</p>';
+  }
+  function laptopBtn(){
+    return '<a class="btn" style="font-size:18px;padding:14px 38px;margin:14px 0 0" href="Quasar-Miner-OneClick-GUI.zip" download>⬇️ Download One-Click Miner (Windows)</a>'
+      + '<p style="color:var(--mut);font-size:13px;margin:10px 0 0">Heavier mining — joins the real P2P network.</p>';
+  }
+  function registerBtn(){
+    return '<a class="btn" style="font-size:16px;padding:14px 32px;margin:12px 0 0" href="register.html">📝 Register with your email — then start mining</a>';
   }
   function renderGates(){
     var g1 = document.getElementById('minerGate1'), g2 = document.getElementById('minerGate2');
     if (!g1 && !g2) return;
-    function setAll(html){ if(g1) g1.innerHTML = html; if(g2) g2.innerHTML = html; }
+    function set1(html){ if(g1) g1.innerHTML = html; }
+    function set2(html){ if(g2) g2.innerHTML = html; }
+    function setBoth(html){ set1(html); set2(html); }
     /* Firebase not set up yet -> locked */
     if (!window.QF || !QF.configured()){
-      setAll(gateHTML('🔒 <b>Miner download is locked.</b><br><span style="color:var(--mut);font-size:13.5px">The account system is setting up — please check back soon.</span>'));
+      setBoth(gateHTML('🔒 <b>Mining is locked.</b><br><span style="color:var(--mut);font-size:13.5px">The account system is setting up — please check back soon.</span>'));
       return;
     }
     var fb = QF.init();
-    if (!fb){ setAll(gateHTML('🔒 <b>Miner download is locked.</b>')); return; }
-    setAll('<p style="color:var(--mut)">Checking your account…</p>');
+    if (!fb){ setBoth(gateHTML('🔒 <b>Mining is locked.</b>')); return; }
+    setBoth('<p style="color:var(--mut)">Checking your account…</p>');
     fb.auth.onAuthStateChanged(function(user){
-      if (!user){
-        setAll('<a class="btn" style="font-size:16px;padding:14px 32px;margin:12px 0 0" href="register.html">📝 Register with your email — then start mining</a>');
-        return;
-      }
+      if (!user){ setBoth(registerBtn()); return; }
       if (!user.emailVerified){
-        setAll(gateHTML('📧 <b>One more step — verify your email.</b><br><span style="color:var(--mut);font-size:13.5px">We sent you a verification link — open it, then refresh this page to start mining.</span>'));
+        setBoth(gateHTML('📧 <b>One more step — verify your email.</b><br><span style="color:var(--mut);font-size:13.5px">We sent you a verification link — open it, then refresh this page.</span>'));
         return;
       }
-      setAll(startBtn());
+      set1(browserBtn());
+      set2(laptopBtn());
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderGates);
@@ -453,84 +465,6 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
   tick(); setInterval(tick, 30000);
 })();
 </script>
-<div class="card rv" style="margin-bottom:18px">
-  <div class="stephead"><div class="big">01</div><h3>⬇️ Python — installs itself!</h3></div>
-  <ol class="steps">
-    <li><b>Nothing to do!</b> When you press START MINING, the app checks for Python and <b>downloads + installs it automatically</b> (one time only, no admin needed).</li>
-    <li>Only if auto-install ever fails: go to <b>python.org</b> → Downloads → Windows → install Python 3.x with ✅ "Add python.exe to PATH" ticked.</li>
-  </ol>
-  <p class="seeyou">👀 You will see:</p>
-  <code class="cmd">Python found - OK.  (inside the app window)</code>
-</div>
-
-<div class="card rv" style="margin-bottom:18px">
-  <div class="stephead"><div class="big">02</div><h3>📦 Download the miner</h3></div>
-  <ol class="steps">
-    <li>Click the button below and save the zip file.</li>
-    <li>Right-click the zip → <b>Extract All</b> → Extract.</li>
-  </ol>
-  <p class="seeyou">👀 You will see:</p>
-  <code class="cmd">a folder with files like quasar_cli.py, node.py, README.md</code>
-  <div id="minerGate2"></div>
-</div>
-
-<div class="card rv" style="margin-bottom:18px">
-  <div class="stephead"><div class="big">03</div><h3>👛 Create your wallet (one time only)</h3></div>
-  <ol class="steps">
-    <li>Open <b>cmd INSIDE</b> the extracted folder (click the address bar, type <b>cmd</b>, press Enter).</li>
-    <li>Type: <code>set QUASAR_DATA_DIR=quasar-seed</code> and press Enter. <b>No output = OK.</b></li>
-    <li>Type: <code>python quasar_cli.py new-address miner</code> and press Enter.</li>
-  </ol>
-  <p class="seeyou">👀 You will see:</p>
-  <code class="cmd">Your address: QU...</code>
-  <code class="cmd">saved to quasar-seed\wallets\miner.json</code>
-  <div class="warn">🔑 This address is your wallet. <b>Never share</b> the wallet file — anyone with it can take your coins. (You can use any name instead of "miner".)</div>
-</div>
-
-<div class="card rv" style="margin-bottom:18px">
-  <div class="stephead"><div class="big">04</div><h3>🖥️ Start the node</h3></div>
-  <ol class="steps">
-    <li>In the <b>same</b> cmd window, type:<br><code>python quasar_cli.py start-node --port 9333 --datadir quasar-seed</code></li>
-    <li>If Windows Firewall asks → click <b>Allow access</b>.</li>
-  </ol>
-  <p class="seeyou">👀 You will see:</p>
-  <code class="cmd">Starting P2P node on port 9333 (data: quasar-seed)...</code>
-  <code class="cmd">quasar-node:9333&gt;</code>
-  <div class="warn">⚠️ This is the <b>node window</b>. Do NOT close it (minimize is fine). Closing it stops everything.</div>
-</div>
-
-<div class="card rv" style="margin-bottom:18px">
-  <div class="stephead"><div class="big">05</div><h3>⚡ Start mining</h3></div>
-  <ol class="steps">
-    <li>In the node window (<b>quasar-node:9333&gt;</b>) type: <code>mine-auto miner</code> and press Enter.</li>
-  </ol>
-  <p class="seeyou">👀 You will see:</p>
-  <code class="cmd">Mining block 1 (difficulty=000, 0 txs)...</code>
-  <code class="cmd">Block #1 mined! ...</code>
-  <p style="color:var(--mut)">Your laptop now mines on its own — about one block every ~30 seconds. Press <b>Ctrl+C</b> to stop.</p>
-</div>
-
-<div class="card rv" style="margin-bottom:18px">
-  <div class="stephead"><div class="big">06</div><h3>💰 Check your coins</h3></div>
-  <ol class="steps">
-    <li>In the node window type: <code>balance miner</code> and press Enter.</li>
-  </ol>
-  <p class="seeyou">👀 You will see:</p>
-  <code class="cmd">Balance: 50000.0 QSR</code>
-  <p style="color:var(--mut)">Every block adds 50,000 QSR. 🎉</p>
-</div>
-
-<div class="card rv help" style="margin-bottom:18px">
-  <h3>🛠️ Stuck somewhere? Common fixes</h3>
-  <table class="trouble" style="width:100%;border-collapse:collapse;margin-top:10px">
-    <tr><td>'python' not recognized</td><td>PATH tick was missed → reinstall Python with ✅ "Add python.exe to PATH".</td></tr>
-    <tr><td>'mine' not recognized</td><td>You're in normal cmd. Type it in the <b>node window</b> (quasar-node:9333&gt;).</td></tr>
-    <tr><td>Wallets: (none yet)</td><td>You opened a <b>new</b> cmd window → run the <code>set</code> line again in it.</td></tr>
-    <tr><td>No such file</td><td>Folder name mismatch → use the <b>same</b> datadir name in every command.</td></tr>
-    <tr><td>Firewall popup</td><td>Click <b>Allow access</b> — the node needs port 9333.</td></tr>
-    <tr><td>Laptop getting hot</td><td>Keep it on a <b>hard table</b> (not bed/sofa), charger plugged in.</td></tr>
-  </table>
-</div>
 
 <div class="card rv" style="text-align:center">
   <h3>🤖 Still stuck? AI support is coming</h3>
