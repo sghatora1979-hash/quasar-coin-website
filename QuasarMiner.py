@@ -18,7 +18,6 @@
 import json
 import os
 import re
-import shutil
 import subprocess
 import sys
 import threading
@@ -35,6 +34,11 @@ PID_FILE = os.path.join(DATA_DIR, "miner.pid")
 SEED_FILE = os.path.join(SCRIPT_DIR, "seed.txt")
 CLI = os.path.join(SCRIPT_DIR, "quasar_cli.py")
 LOCAL_PORT = 9334  # local control server for the website dashboard
+NODE_PORT = 9333   # P2P port the node listens on
+
+# Make every quasar_cli call (new-address, balance, info) use the same
+# data dir as the node itself - exactly like the v1 launcher did.
+os.environ["QUASAR_DATA_DIR"] = DATA_DIR
 
 # pythonw = no console window at all. If we were started with
 # python.exe, prefer the pythonw.exe sitting next to it.
@@ -111,33 +115,54 @@ def write_pid(pid):
         pass
 
 
+def _node_port_pids():
+    """PIDs listening on the node P2P port (Windows netstat -ano).
+
+    Reliable on Windows 11 where wmic no longer exists. If anything
+    listens on NODE_PORT locally, a quasar node is up - typically a
+    previous miner that was never stopped.
+    """
+    pids = set()
+    if os.name != "nt":
+        return pids
+    try:
+        out = subprocess.run(["netstat", "-ano", "-p", "TCP"],
+                             capture_output=True, text=True,
+                             timeout=10).stdout
+    except Exception:
+        return pids
+    for line in out.splitlines():
+        # e.g. "  TCP    0.0.0.0:9333    0.0.0.0:0    LISTENING    1234"
+        m = re.search(r"TCP\s+\S+:(\d+)\s+\S+\s+LISTENING\s+(\d+)", line)
+        if m and int(m.group(1)) == NODE_PORT:
+            pid = int(m.group(2))
+            if pid != os.getpid():
+                pids.add(pid)
+    return pids
+
+
 def miner_running():
     pid = read_pid()
     if pid and pid_alive(pid):
         return True
-    # Fallback: look for a quasar start-node process (Windows).
-    if os.name == "nt":
-        try:
-            out = subprocess.run(
-                ["tasklist", "/FO", "CSV", "/NH"],
-                capture_output=True, text=True, timeout=10,
-            ).stdout
-            # tasklist alone can't show command lines; use wmic when present.
-            wmic = shutil.which("wmic")
-            if wmic:
-                w = subprocess.run(
-                    [wmic, "process", "where",
-                     "name='python.exe' or name='pythonw.exe'",
-                     "get", "commandline,processid", "/format:csv"],
-                    capture_output=True, text=True, timeout=15,
-                ).stdout
-                for line in w.splitlines():
-                    if "quasar_cli.py" in line and "start-node" in line:
-                        return True
-            return False
-        except Exception:
-            return False
+    # Fallback: a node from a previous session (e.g. the v1 miner)
+    # holds the P2P port even though we have no PID file for it.
+    if os.name == "nt" and _node_port_pids():
+        return True
     return False
+
+
+def kill_stale_node():
+    """Stop any node holding the P2P port (old miner left running)."""
+    killed = False
+    for pid in _node_port_pids():
+        try:
+            subprocess.run(["taskkill", "/F", "/PID", str(pid)],
+                           capture_output=True, timeout=10)
+            killed = True
+        except Exception:
+            pass
+    return killed
 
 
 def get_height():
@@ -175,9 +200,21 @@ def start_miner():
     else:
         log("Wallet found - OK.")
 
-    if miner_running():
+    pid = read_pid()
+    if pid and pid_alive(pid):
         log("Miner already running - attaching.")
         return True
+    # A node from a previous session (e.g. the v1 miner left running)
+    # still holds the P2P port - stop it so the new node can start.
+    if os.name == "nt" and _node_port_pids():
+        log("Old miner found still running - stopping it...")
+        kill_stale_node()
+        time.sleep(3)
+        try:
+            if os.path.exists(PID_FILE):
+                os.remove(PID_FILE)
+        except Exception:
+            pass
 
     seed = read_seed()
     args = ["start-node", "--datadir", DATA_DIR, "--mine-auto", "miner"]
@@ -218,26 +255,9 @@ def stop_miner():
                 os.kill(pid, 15)
         except Exception:
             pass
-    # Fallback sweep for any stray start-node processes (Windows).
+    # Fallback sweep: kill anything still holding the P2P port.
     if os.name == "nt":
-        try:
-            wmic = shutil.which("wmic")
-            if wmic:
-                w = subprocess.run(
-                    [wmic, "process", "where",
-                     "name='python.exe' or name='pythonw.exe'",
-                     "get", "commandline,processid", "/format:csv"],
-                    capture_output=True, text=True, timeout=15,
-                ).stdout
-                for line in w.splitlines():
-                    if "quasar_cli.py" in line and "start-node" in line:
-                        m = re.search(r"(\d+)\s*$", line.strip())
-                        if m:
-                            subprocess.run(
-                                ["taskkill", "/F", "/PID", m.group(1)],
-                                capture_output=True, timeout=10)
-        except Exception:
-            pass
+        kill_stale_node()
     try:
         if os.path.exists(PID_FILE):
             os.remove(PID_FILE)
