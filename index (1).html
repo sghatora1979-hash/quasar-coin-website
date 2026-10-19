@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quasar Coin (QSR) — Our Coin, Our Mining</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF9F2; --bg2:#FFF3E2; --card:#FFFFFF;
+  --o1:#FF6B1A; --o2:#FF9A3C; --amber:#FFB800;
+  --ink:#2D1B0E; --mut:#7A5A3E; --line:rgba(255,107,26,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;overflow-x:hidden}
+h1,h2,h3,.pf{font-family:'Poppins',sans-serif}
+.ribbon{background:linear-gradient(90deg,#2D1B0E,#4A2C14);color:#FFD9A0;text-align:center;
+  padding:9px 14px;font-size:13.5px;font-weight:600;letter-spacing:.2px}
+/* NAV */
+nav{position:sticky;top:0;z-index:60;display:flex;justify-content:space-between;align-items:center;
+  padding:14px 28px;background:rgba(255,249,242,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line)}
+.logo{font-family:'Poppins';font-weight:900;font-size:22px;letter-spacing:.5px;
+  background:linear-gradient(90deg,var(--o1),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav .links a{margin:0 11px;text-decoration:none;color:var(--ink);font-weight:600;font-size:15px}
+nav .links a:hover{color:var(--o1)}
+.navbtn{background:linear-gradient(90deg,var(--o1),var(--o2));color:#fff!important;padding:10px 22px;border-radius:999px;
+  box-shadow:0 6px 16px rgba(255,107,26,.35)}
+/* HERO */
+.hero{position:relative;padding:96px 24px 80px;text-align:center;overflow:hidden;
+  background:radial-gradient(700px 380px at 15% 10%,#FFE3C2 0%,transparent 60%),
+             radial-gradient(700px 420px at 85% 20%,#FFD9A0 0%,transparent 60%),
+             linear-gradient(180deg,#FFF6E9 0%,var(--bg) 100%)}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;animation:drift 11s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translateY(0)}50%{transform:translateY(-26px)}}
+.eyebrow{display:inline-block;font-weight:700;font-size:13px;letter-spacing:2.5px;color:var(--o1);
+  background:rgba(255,107,26,.1);padding:8px 20px;border-radius:999px;margin-bottom:18px;text-transform:uppercase}
+.hero h1{font-size:clamp(42px,7vw,76px);font-weight:900;line-height:1.08;letter-spacing:-1px}
+.hero h1 .grad{background:linear-gradient(92deg,var(--o1) 10%,var(--amber) 90%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{font-size:clamp(17px,2.4vw,22px);color:var(--mut);max-width:640px;margin:18px auto 30px}
+.btn{display:inline-block;font-family:'Poppins';font-weight:700;font-size:17px;color:#fff;text-decoration:none;
+  padding:15px 36px;border-radius:999px;margin:8px;
+  background:linear-gradient(92deg,var(--o1),var(--o2));box-shadow:0 10px 26px rgba(255,107,26,.4);
+  transition:transform .18s,box-shadow .18s}
+.btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 32px rgba(255,107,26,.5)}
+.btn.ghost{background:#fff;color:var(--o1);border:2px solid var(--o1);box-shadow:0 6px 16px rgba(255,107,26,.15)}
+.pill{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:600}
+.pill b{color:var(--o1)}
+.coinwrap{margin:44px auto 0;max-width:560px;position:relative}
+.coinwrap img{width:100%;border-radius:28px;display:block;
+  box-shadow:0 30px 70px rgba(255,107,26,.35),0 0 0 6px rgba(255,255,255,.7);
+  animation:floaty 6s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-.6deg)}50%{transform:translateY(-14px) rotate(.6deg)}}
+.chip{position:absolute;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border:1px solid var(--line);
+  border-radius:16px;padding:10px 18px;font-weight:700;font-size:14px;box-shadow:0 8px 22px rgba(255,107,26,.2);
+  animation:floaty 7s ease-in-out infinite}
+.chip small{display:block;color:var(--mut);font-weight:500;font-size:12px}
+/* ---- hero 3D coin ---- */
+#hero-coin{width:100%;border-radius:28px;overflow:hidden;position:relative}
+#hero-coin canvas{width:100%!important;height:auto!important;display:block;border-radius:28px;
+  box-shadow:0 30px 70px rgba(255,107,26,.35),0 0 0 6px rgba(255,255,255,.7)}
+/* SECTIONS */
+section{padding:72px 24px;max-width:1140px;margin:auto}
+.eyebrow2{text-align:center;display:block;margin-bottom:10px}
+h2.st{font-size:clamp(28px,4vw,40px);font-weight:800;text-align:center;letter-spacing:-.5px;margin-bottom:6px}
+p.cs{text-align:center;color:var(--mut);max-width:640px;margin:0 auto 36px;font-size:17px}
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:30px 20px;text-align:center;
+  box-shadow:0 10px 30px rgba(255,107,26,.1);position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,var(--o1),var(--amber))}
+.stat .n{font-family:'Poppins';font-size:38px;font-weight:800;
+  background:linear-gradient(92deg,var(--o1),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .l{color:var(--mut);margin-top:8px;font-size:14.5px}
+/* CARDS + STEPS */
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:32px;
+  box-shadow:0 12px 34px rgba(255,107,26,.1)}
+.stepcard{position:relative;overflow:hidden}
+.stepcard .big{font-family:'Poppins';font-size:64px;font-weight:900;line-height:1;
+  background:linear-gradient(180deg,#FFE0BE,#FFC78F);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stepcard h3{font-size:20px;margin:12px 0 8px}
+.stepcard p{color:var(--mut);font-size:15.5px}
+code.cmd{display:block;background:#2B1A0C;color:#FFD9A0;padding:13px 16px;border-radius:14px;margin:10px 0;
+  font-size:13.5px;overflow-x:auto;white-space:nowrap;font-family:ui-monospace,monospace}
+/* VISION */
+.vision{border-radius:30px;overflow:hidden;box-shadow:0 24px 60px rgba(45,27,14,.25);position:relative}
+.vision img{width:100%;display:block}
+.vision .ov{position:absolute;inset:auto 0 0 0;padding:34px;
+  background:linear-gradient(0deg,rgba(30,16,6,.88) 20%,transparent);color:#fff}
+.vision .ov h3{font-size:24px;margin-bottom:8px}
+.vision .ov p{color:#FFE3C2;font-size:15.5px;max-width:640px}
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:22px}
+/* RUNNERS */
+.race{background:linear-gradient(120deg,#2B1A0C,#4A2C14);border-radius:28px;overflow:hidden;
+  position:relative;height:150px;margin:8px 0 30px;box-shadow:0 18px 44px rgba(43,26,12,.3)}
+.race .lbl{position:absolute;top:12px;left:18px;z-index:2;color:#FFD9A0;font-weight:700;font-size:13px;
+  letter-spacing:2px;background:rgba(255,255,255,.1);padding:6px 16px;border-radius:999px}
+.runner{position:absolute;bottom:18px;font-size:46px;animation:run linear infinite;z-index:1}
+@keyframes run{from{left:-90px}to{left:106%}}
+.coinfall{position:absolute;top:-34px;font-size:24px;animation:fall linear infinite;z-index:1}
+@keyframes fall{to{transform:translateY(210px) rotate(360deg)}}
+/* DEMO TERMINAL */
+.term{background:#241407;border-radius:22px;padding:8px;box-shadow:0 18px 44px rgba(36,20,7,.35)}
+.term .bar{display:flex;gap:8px;padding:12px 16px}
+.dot{width:12px;height:12px;border-radius:50%}
+#demoChain{display:flex;gap:10px;overflow-x:auto;padding:14px 16px 18px}
+.blk{background:rgba(255,217,160,.08);border:1px solid rgba(255,217,160,.25);color:#FFD9A0;border-radius:14px;
+  padding:12px 18px;white-space:nowrap;font-size:13px;flex:0 0 auto;font-family:ui-monospace,monospace}
+.blk b{color:var(--amber)}
+.tag{display:inline-block;background:linear-gradient(90deg,var(--amber),var(--o2));color:#2D1B0E;font-size:12px;
+  font-weight:800;padding:5px 14px;border-radius:999px;margin:14px 16px 0;letter-spacing:.6px}
+/* FAQ */
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 22px;margin:12px 0;
+  box-shadow:0 6px 18px rgba(255,107,26,.08)}
+.faq summary{font-family:'Poppins';font-weight:700;cursor:pointer;color:var(--o1);font-size:16.5px;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'+';float:right;font-size:22px;color:var(--amber)}
+.faq details[open] summary::after{content:'–'}
+.faq p{color:var(--mut);margin-top:10px}
+/* FORM */
+form.reg input{width:100%;padding:15px 18px;border:2px solid #F3DDBE;border-radius:16px;margin:9px 0;font-size:16px;
+  font-family:'Inter';background:#FFFEFB}
+form.reg input:focus{outline:none;border-color:var(--o2);box-shadow:0 0 0 4px rgba(255,154,60,.15)}
+footer{text-align:center;padding:36px 20px;color:var(--mut);font-size:14px;border-top:1px solid var(--line);margin-top:20px}
+/* REVEAL */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.rv.on{opacity:1;transform:none}
+/* DETAILED GUIDE */
+.stephead{display:flex;align-items:center;gap:18px;margin-bottom:6px}
+.stephead .big{font-family:'Poppins';font-size:52px;font-weight:900;line-height:1;
+  background:linear-gradient(180deg,#FFE0BE,#FFC78F);-webkit-background-clip:text;background-clip:text;color:transparent}
+ol.steps{margin:10px 0 6px 24px;color:var(--mut);font-size:15.5px}
+ol.steps li{margin:9px 0}
+ol.steps b{color:var(--ink)}
+.seeyou{font-weight:700;margin:14px 0 4px;color:var(--o1);font-size:15px}
+.warn{background:#FFF3E2;border-left:5px solid var(--amber);border-radius:0 14px 14px 0;padding:12px 18px;margin:12px 0;
+  font-size:14.5px;color:var(--ink)}
+.trouble td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:14.5px;vertical-align:top}
+.trouble tr td:first-child{font-weight:700;color:var(--o1);white-space:nowrap}
+.help{background:linear-gradient(120deg,#FFF3E2,#FFE4C4)}
+#chatfab{position:fixed;bottom:22px;right:22px;width:62px;height:62px;border-radius:50%;
+  background:linear-gradient(135deg,var(--o1),var(--amber));color:#fff;border:none;font-size:28px;cursor:pointer;
+  box-shadow:0 12px 30px rgba(255,107,26,.5);z-index:100;transition:transform .2s}
+#chatfab:hover{transform:scale(1.08)}
+#chatpanel{position:fixed;bottom:96px;right:22px;width:384px;max-width:calc(100vw - 44px);height:540px;max-height:calc(100vh - 130px);
+  background:#fff;border-radius:24px;box-shadow:0 24px 60px rgba(45,27,14,.3);z-index:100;display:none;flex-direction:column;overflow:hidden;
+  border:1px solid var(--line)}
+#chatpanel.open{display:flex}
+.chead{background:linear-gradient(120deg,var(--o1),var(--o2));color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px}
+.onlinedot{width:10px;height:10px;background:#28C840;border-radius:50%;box-shadow:0 0 0 3px rgba(255,255,255,.3);flex:0 0 10px}
+#chatbody{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#FFF9F2}
+.msg{max-width:88%;padding:11px 15px;border-radius:16px;font-size:14.5px;line-height:1.55}
+.msg.bot{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:6px;box-shadow:0 2px 8px rgba(255,107,26,.08)}
+.msg.user{background:linear-gradient(120deg,var(--o1),var(--o2));color:#fff;align-self:flex-end;border-bottom-right-radius:6px}
+.msg.bot code{background:#2B1A0C;color:#FFD9A0;padding:2px 8px;border-radius:6px;font-size:12.5px;font-family:ui-monospace,monospace}
+.qreplies{display:flex;flex-wrap:wrap;gap:8px}
+.qr{background:#fff;border:1.5px solid var(--o2);color:var(--o1);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter'}
+.cinput{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:#fff}
+.cinput input{flex:1;border:2px solid #F3DDBE;border-radius:999px;padding:11px 16px;font-size:14px;font-family:'Inter'}
+.cinput input:focus{outline:none;border-color:var(--o2)}
+.cinput button{background:linear-gradient(120deg,var(--o1),var(--o2));color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;flex:0 0 44px}
+.typing{color:var(--mut);font-size:13px;font-style:italic}
+@media(max-width:640px){nav .links a:not(.navbtn){display:none}.chip{display:none}}
+/* ---- 3D living gallery cards ---- */
+.q3dcard{perspective:1000px}
+.q3dscene{position:relative;overflow:hidden;transform-style:preserve-3d;
+  will-change:transform;touch-action:pan-y;cursor:grab}
+.q3dscene:active{cursor:grabbing}
+.q3dimg{width:100%;display:block;transform:scale(1.02);
+  animation:qkenburns 26s ease-in-out infinite alternate;will-change:transform}
+@keyframes qkenburns{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.14) translate(-1.5%,1.5%)}}
+.q3dparticles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.q3dshine{position:absolute;top:-20%;bottom:-20%;left:-70%;width:55%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.22),transparent);
+  transform:skewX(-12deg);animation:qshine 8s ease-in-out infinite}
+@keyframes qshine{0%,55%{left:-70%}90%,100%{left:130%}}
+.q3dglow{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60% 45% at 50% 55%,rgba(255,190,90,.14),transparent 70%);
+  animation:qglow 5s ease-in-out infinite}
+@keyframes qglow{0%,100%{opacity:.6}50%{opacity:1}}
+</style>
+</head>
+<body>
+<div class="ribbon">⚠️ TESTNET — These coins are for testing only. They have no real monetary value.</div>
+<nav>
+  <div class="logo">◉ QUASAR COIN</div>
+  <div class="links"><a href="#vision">Vision</a><a href="#mining">Mining</a><a href="#demo3d">3D Demo</a><a href="#wallet">Wallet</a><a href="#exchange">Exchange</a><a href="paper.html">Paper</a><a href="#faq">FAQ</a><a href="#join" class="navbtn">Join Now</a></div>
+</nav>
+
+<header class="hero">
+  <div class="blob" style="width:340px;height:340px;background:#FFB800;top:-80px;left:-60px"></div>
+  <div class="blob" style="width:280px;height:280px;background:#FF8C42;bottom:10%;right:-40px;animation-delay:3s"></div>
+  <span class="eyebrow">◉ Our Own Blockchain • Our Own Mining</span>
+  <h1>QUASAR COIN<br><span class="grad">Mine it. Send it. Grow it.</span></h1>
+  <p class="sub">Mine coins on your laptop, send them to friends with <b>no exchange needed</b>.<br>500 billion coins. 30-second blocks. Big flat rewards — then halving.</p>
+  <a class="btn" href="#mining">⛏️ Start Mining</a>
+  <a class="btn ghost" href="register.html">📝 Register / Login</a>
+  <div class="coinwrap">
+    <div id="hero-coin"></div>
+    <div class="chip" style="top:6%;right:-24px;animation-delay:1.2s">⛏️ 50,000 QSR<small>reward per block</small></div>
+    <div class="chip" style="bottom:10%;left:-30px;animation-delay:2.4s">⚡ 30 seconds<small>per block</small></div>
+  </div>
+</header>
+
+<section class="rv">
+<span class="eyebrow eyebrow2">◉ Numbers</span>
+<h2 class="st">The numbers, out in the open</h2>
+<p class="cs">No hidden share. What is written is what is real.</p>
+<div class="stats">
+  <div class="stat"><div class="n"><span data-count="500">0</span> billion</div><div class="l">Total supply — never more than this</div></div>
+  <div class="stat"><div class="n"><span data-count="50000">0</span></div><div class="l">Reward per block (QSR) — flat</div></div>
+  <div class="stat"><div class="n"><span data-count="30">0</span> sec</div><div class="l">Target time per block</div></div>
+  <div class="stat"><div class="n">~<span data-count="11">0</span> years</div><div class="l">Mining runs: 300B flat, then halving</div></div>
+</div>
+</section>
+
+<section class="rv">
+<span class="eyebrow eyebrow2">📅 Emission Schedule</span>
+<h2 class="st">How the 500 billion are released</h2>
+<p class="cs">Fixed rules, written in code. Nobody — not even us — can change them later.</p>
+<div class="grid3">
+  <div class="card stepcard"><div class="big">A</div><h3>⛏️ Flat mining — 300B</h3><p><b>50,000 QSR</b> per block, every ~30 seconds, for about <b>5.7 years</b>. Early miners earn the most.</p></div>
+  <div class="card stepcard"><div class="big">B</div><h3>📉 Halving — ~98.6B</h3><p>Reward halves: <b>25,000</b>/block for 2.5 years, then <b>12,500</b>/block for 2.5 years. Then mining stops forever.</p></div>
+  <div class="card stepcard"><div class="big">C</div><h3>👑 Founder — 100B reserved</h3><p>Reserved founder allocation, released gradually over <b>1 week</b>. Never mined, never extra — always inside the 500B cap.</p></div>
+</div>
+<p class="cs" style="margin-top:26px">⛏️ + 📉 + 👑 = <b>under 500 billion total. Not one coin more, ever.</b></p>
+</section>
+
+<section id="vision" class="rv">
+<span class="eyebrow eyebrow2">🔭 Vision</span>
+<h2 class="st">The brightest thing in the universe</h2>
+<p class="cs">Quasar — our inspiration. Maximum brightness, maximum power.</p>
+<div class="vision">
+  <img src="quasar-vision.jpg" alt="Quasar — the brightest object in the universe">
+  <div class="ov"><h3>Quasar's founding principles</h3>
+  <p>Our own independent blockchain — from everyday laptops to powerful computers, everyone can mine.</p></div>
+</div>
+<div class="pillars">
+  <div class="card"><h3>💻 Mine on your own computer</h3><p style="color:var(--mut)">Old laptops, Windows PCs, MacBooks — everyone can take part.</p></div>
+  <div class="card"><h3>🔍 Independent and verifiable</h3><p style="color:var(--mut)">Our own blockchain. Every transaction is verified openly.</p></div>
+  <div class="card"><h3>🔒 500 billion, that's it</h3><p style="color:var(--mut)">Not a single coin more will ever be made. No tricks.</p></div>
+</div>
+</section>
+
+<section id="whyquasar" class="rv">
+<span class="eyebrow eyebrow2">🌌 Why "Quasar"?</span>
+<h2 class="st">What is a Quasar?</h2>
+<p class="cs">A quasar is one of the brightest and most powerful objects in the universe — formed around a giant black hole at the center of a distant galaxy. <b>Quasar</b> stands for <b>Quasi-Stellar Radio Source</b> — a radio source that looks almost like a star.</p>
+<div class="pillars">
+  <div class="card"><h3>🕳️ A giant black hole</h3><p style="color:var(--mut)">At the galaxy's center sits an enormous black hole.</p></div>
+  <div class="card"><h3>🔥 Gas falls in, heats up</h3><p style="color:var(--mut)">Swirling gas grows unimaginably hot, releasing vast energy.</p></div>
+  <div class="card"><h3>💥 Outshines galaxies</h3><p style="color:var(--mut)">One quasar can shine brighter than billions of stars combined.</p></div>
+</div>
+<div class="pillars" style="margin-top:16px">
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="gold" data-core="0.56,0.44"><img class="q3dimg" src="quasar-gallery-1.jpg" alt="Quasar — blazing core with twin jets"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">The blazing heart — energy pouring across the universe</p></div>
+  <div class="card q3dcard" style="padding:0;overflow:hidden"><div class="q3dscene" data-sparks="galaxy" data-core="0.5,0.52"><img class="q3dimg" src="quasar-gallery-2.jpg" alt="Quasar jet erupting from a spiral galaxy"><canvas class="q3dparticles"></canvas><div class="q3dglow"></div><div class="q3dshine"></div></div><p style="padding:12px 16px;color:var(--mut);font-size:13.5px">A galaxy crowned by its quasar — the brightest star</p></div>
+</div>
+<script>
+(function(){
+/* 3D drag-to-rotate (all directions) + inertia + idle sway — waits until ALL cards exist */
+function initQ3D(){
+document.querySelectorAll('.q3dcard').forEach(function(card){
+  var scene=card.querySelector('.q3dscene');
+  var rx=0,ry=0,trx=0,try_=0,vx=0,vy=0,dragging=false,lx=0,ly=0,lastT=0;
+  function clamp(v,a,b){return v<a?a:v>b?b:v;}
+  function loop(){
+    var now=performance.now()/1000;
+    if(!dragging){
+      trx+=vx;try_+=vy;vx*=0.93;vy*=0.93;
+      if(Math.abs(vx)<0.02)vx=0;if(Math.abs(vy)<0.02)vy=0;
+      if(now-lastT>3&&vx===0&&vy===0){trx=Math.sin(now*0.5)*7;try_=Math.cos(now*0.42)*9;}
+      trx=clamp(trx,-38,38);try_=clamp(try_,-38,38);
+    }
+    rx+=(trx-rx)*0.14;ry+=(try_-ry)*0.14;
+    scene.style.transform='rotateY('+ry.toFixed(2)+'deg) rotateX('+rx.toFixed(2)+'deg)';
+    requestAnimationFrame(loop);
+  }
+  function kick(){lastT=performance.now()/1000;}
+  card.addEventListener('pointerdown',function(e){
+    dragging=true;lx=e.clientX;ly=e.clientY;vx=vy=0;kick();
+  });
+  card.addEventListener('pointermove',function(e){
+    if(!dragging)return;
+    var dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;kick();
+    try_=clamp(try_+dx*0.28,-38,38);trx=clamp(trx-dy*0.22,-38,38);
+    vx=-dy*0.22;vy=dx*0.28;
+  });
+  function endDrag(){dragging=false;kick();}
+  card.addEventListener('pointerup',endDrag);
+  card.addEventListener('pointercancel',endDrag);
+  card.addEventListener('pointerleave',function(){if(dragging)endDrag();});
+  requestAnimationFrame(loop);
+});
+/* floating spark particles */
+var PALETTES={gold:['#ffd94d','#ff9a2a','#fff3c4','#9fd4ff'],galaxy:['#ffe9a8','#ffffff','#9fd4ff','#ffc46b']};
+document.querySelectorAll('.q3dscene').forEach(function(scene){
+  var cv=scene.querySelector('.q3dparticles');if(!cv)return;
+  var ctx=cv.getContext('2d'),W,H,ps=[];
+  var pal=PALETTES[scene.getAttribute('data-sparks')]||PALETTES.gold;
+  function size(){var r=scene.getBoundingClientRect();W=cv.width=r.width;H=cv.height=r.height;}
+  size();window.addEventListener('resize',size);
+  for(var i=0;i<46;i++)ps.push({x:Math.random(),y:Math.random(),s:0.6+Math.random()*2.2,
+    v:0.0006+Math.random()*0.0022,ph:Math.random()*6.28,sw:0.004+Math.random()*0.012,
+    c:pal[i%pal.length]});
+  /* gold Q-coins bursting from the quasar core */
+  var coreA=(scene.getAttribute('data-core')||'0.5,0.5').split(',');
+  var coreX=parseFloat(coreA[0]),coreY=parseFloat(coreA[1]);
+  var coins=[];
+  function newCoin(init){return {ang:Math.random()*6.28,d:init?Math.random()*0.9:0,
+    spd:0.22+Math.random()*0.3,spin:Math.random()*6.28,sv:2.5+Math.random()*4,
+    sz:0.55+Math.random()*0.75};}
+  for(var ci3=0;ci3<14;ci3++)coins.push(newCoin(true));
+  function drawCoin(x,y,s,sq,alpha){
+    ctx.save();ctx.translate(x,y);ctx.scale(Math.max(0.12,sq),1);ctx.scale(s,s);
+    ctx.globalAlpha=alpha;
+    var g=ctx.createRadialGradient(0,0,0.08,0,0,1);
+    g.addColorStop(0,'#fff7c9');g.addColorStop(0.5,'#ffd94d');g.addColorStop(1,'#b97c06');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,1,0,7);ctx.fill();
+    ctx.strokeStyle='#8a5a00';ctx.lineWidth=0.14;ctx.beginPath();ctx.arc(0,0,0.86,0,7);ctx.stroke();
+    ctx.fillStyle='#7a4d00';ctx.font='900 1.15px Poppins,Arial,sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Q',0,0.1);
+    ctx.restore();ctx.globalAlpha=1;}
+  (function tick(){ctx.clearRect(0,0,W,H);var t=Date.now()/1000;
+    /* pulsing core glow — coins are born here */
+    var gx=coreX*W,gy=coreY*H,gr=(0.11+0.035*Math.sin(t*3.1))*Math.max(W,H);
+    var gg=ctx.createRadialGradient(gx,gy,2,gx,gy,gr);
+    gg.addColorStop(0,'rgba(255,242,205,'+(0.55+0.2*Math.sin(t*3.1)).toFixed(2)+')');
+    gg.addColorStop(1,'rgba(255,200,100,0)');
+    ctx.fillStyle=gg;ctx.beginPath();ctx.arc(gx,gy,gr,0,7);ctx.fill();
+    /* coins fly out from inside */
+    var base=Math.min(W,H)*0.085;
+    for(var j=0;j<coins.length;j++){var cn=coins[j];
+      cn.d+=cn.spd/60;cn.spin+=cn.sv/60;
+      if(cn.d>1){coins[j]=newCoin(false);continue;}
+      var px=gx+Math.cos(cn.ang)*cn.d*W*0.58,
+          py=gy+Math.sin(cn.ang)*cn.d*H*0.58;
+      var s=(0.12+cn.d*1.15)*cn.sz*base;
+      var sq=Math.abs(Math.cos(cn.spin))*0.85+0.15;
+      var al=Math.min(1,cn.d/0.12)*Math.min(1,(1-cn.d)/0.22)*0.95;
+      drawCoin(px,py,s,sq,al);}
+    for(var i=0;i<ps.length;i++){var p=ps[i];
+      p.y-=p.v;if(p.y<-0.05){p.y=1.05;p.x=Math.random();}
+      var x=(p.x+Math.sin(t*0.9+p.ph)*p.sw)*W,y=p.y*H;
+      var tw=0.45+0.55*Math.abs(Math.sin(t*2+p.ph));
+      ctx.globalAlpha=tw;ctx.fillStyle=p.c;
+      ctx.beginPath();ctx.arc(x,y,p.s,0,7);ctx.fill();}
+    ctx.globalAlpha=1;requestAnimationFrame(tick);})();
+});
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initQ3D);}else{initQ3D();}
+})();
+</script>
+<div class="card rv">
+  <h3>🌟 From the cosmos to our coin</h3>
+  <table class="trouble" style="width:100%;border-collapse:collapse;margin-top:10px">
+    <tr><td><b>Cosmic Quasar</b></td><td><b>Our Quasar Coin</b></td></tr>
+    <tr><td>Immense energy</td><td>A symbol of big technological ambition</td></tr>
+    <tr><td>Brightness visible across the universe</td><td>The goal of worldwide recognition</td></tr>
+    <tr><td>An extremely powerful phenomenon</td><td>The inspiration to build a powerful blockchain</td></tr>
+    <tr><td>Built on the laws of physics</td><td>Built on mathematics, cryptography and consensus rules</td></tr>
+  </table>
+  <p style="color:var(--mut);margin-top:12px;font-size:14.5px"><b>Honest note:</b> a great name alone doesn't make a coin valuable. Quasar Coin's real strength will come from secure code, reliable mining, fair distribution, network use — and people's trust. That's what we're building, block by block. 🧱</p>
+</div>
+</section>
+
+<section id="mining" class="rv">
+<span class="eyebrow eyebrow2">⛏️ Mining</span>
+<h2 class="st">Start mining — pick one</h2>
+<p class="cs"><b>Option A</b> mines right in your browser (1 click, no download). <b>Option B</b> is the laptop program (3 clicks, heavier mining, joins the real P2P network). No typing, no black window — ever.</p>
+<div class="card rv" style="margin-bottom:18px;border:2px solid var(--o1);background:linear-gradient(180deg,#FFF6E9,#fff)">
+  <div class="stephead"><div class="big">🌐</div><h3>Option A: mine in your browser — 1 click</h3></div>
+  <p style="color:var(--mut)">No download, no install. Press START MINING below and mining runs in the background of this page — keep the tab open while mining.</p>
+  <div id="minerGate1"></div>
+</div>
+<div class="card rv" style="margin-bottom:18px">
+  <div class="stephead"><div class="big">💻</div><h3>Option B: laptop miner — 3 clicks</h3></div>
+  <ol class="steps">
+    <li><b>Step 1 — Wallet:</b> <a href="wallet.html" style="color:var(--o1);font-weight:700">create your wallet</a> — you get 24 secret words. Write them on paper.</li>
+    <li><b>Step 2 — Download:</b> download the miner below, then right-click the zip → <b>Extract All</b>.</li>
+    <li><b>Step 3 — Mine:</b> double-click <b><code>START-MINING.bat</code></b>, press <b>"Use my 24 words"</b>, paste your words, then the big gold <b>START MINING</b> button. Coins go ONLY to your wallet.</li>
+  </ol>
+  <p class="seeyou">👀 Behind the scenes (you don’t type anything):</p>
+  <code class="cmd">Python check → auto-installs if missing → creates your wallet → joins the seed → miner starts</code>
+  <p style="color:var(--mut);margin-top:8px">The window shows <b>live</b>: block number growing + your QSR balance — about one block every ~30 seconds. Press STOP or close the window to stop; your coins stay saved. Tick “Start mining automatically with Windows” and you never open the folder again — or control it from your dashboard’s <b>⛏️ My Miner</b> card.</p>
+  <p style="color:var(--mut);font-size:13px">⚠️ Honest note: no website can start a program on your laptop by itself — browsers block it for safety. That’s why the laptop miner needs these 3 clicks from you.</p>
+  <div id="minerGate2"></div>
+</div>
+<div class="card rv" id="liveStrip" style="margin-bottom:18px;display:none">
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+    <span class="pill" style="background:#E9F7EF;border:1px solid #9ADBB5;color:#14663A;font-weight:700">● LIVE NETWORK</span>
+    <span class="pill">Block <b id="lsH">—</b></span>
+    <span class="pill"><b id="lsM">—</b> miners online</span>
+    <span class="pill"><b id="lsQ">—</b> QSR minted</span>
+  </div>
+  <p class="cs" id="lsN" style="margin:8px 0 0"></p>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="config.js"></script>
+<script src="qfirebase.js"></script>
+<script>
+(function(){
+  /* ---- MINER ACCESS: register with email -> verify -> START MINING (no lock, no approval) ---- */
+  function gateHTML(inner){
+    return '<div class="card" style="margin:12px 0 0;padding:14px 18px;background:rgba(255,255,255,.7)">' + inner + '</div>';
+  }
+  function browserBtn(){
+    return '<a class="btn" style="font-size:20px;padding:16px 46px;margin:14px 0 0;background:linear-gradient(180deg,#FFD54A,#F5A623);border:2px solid #B87700;box-shadow:0 4px 18px rgba(245,166,35,.45);color:#3A2500" href="dashboard.html#webMiner">⚡ START MINING</a>'
+      + '<p style="color:var(--mut);font-size:13px;margin:10px 0 0">One click — mining runs in your browser. No download, no install. Keep the tab open.</p>';
+  }
+  function laptopBtn(){
+    return '<a class="btn" style="font-size:18px;padding:14px 38px;margin:14px 0 0" href="Quasar-Miner-OneClick-GUI.zip" download>⬇️ Download One-Click Miner (Windows)</a>'
+      + '<p style="color:var(--mut);font-size:13px;margin:10px 0 0">Heavier mining — joins the real P2P network.</p>';
+  }
+  function registerBtn(){
+    return '<a class="btn" style="font-size:16px;padding:14px 32px;margin:12px 0 0" href="register.html">📝 Register with your email — then start mining</a>';
+  }
+  function renderGates(){
+    var g1 = document.getElementById('minerGate1'), g2 = document.getElementById('minerGate2');
+    if (!g1 && !g2) return;
+    function set1(html){ if(g1) g1.innerHTML = html; }
+    function set2(html){ if(g2) g2.innerHTML = html; }
+    function setBoth(html){ set1(html); set2(html); }
+    /* Firebase not set up yet -> locked */
+    if (!window.QF || !QF.configured()){
+      setBoth(gateHTML('🔒 <b>Mining is locked.</b><br><span style="color:var(--mut);font-size:13.5px">The account system is setting up — please check back soon.</span>'));
+      return;
+    }
+    var fb = QF.init();
+    if (!fb){ setBoth(gateHTML('🔒 <b>Mining is locked.</b>')); return; }
+    setBoth('<p style="color:var(--mut)">Checking your account…</p>');
+    fb.auth.onAuthStateChanged(function(user){
+      if (!user){ setBoth(registerBtn()); return; }
+      if (!user.emailVerified){
+        setBoth(gateHTML('📧 <b>One more step — verify your email.</b><br><span style="color:var(--mut);font-size:13.5px">We sent you a verification link — open it, then refresh this page.</span>'));
+        return;
+      }
+      set1(browserBtn());
+      set2(laptopBtn());
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderGates);
+  else renderGates();
+})();
+</script>
+<script>
+(function(){
+  if (!window.QF || !QF.configured()) return;
+  var fb = QF.init();
+  function tick(){
+    QF.liveStats(fb, function(err, s){
+      if (err || !s) return;
+      document.getElementById('liveStrip').style.display = 'block';
+      document.getElementById('lsH').textContent = Number(s.height).toLocaleString('en-US');
+      document.getElementById('lsM').textContent = s.minersOnline;
+      document.getElementById('lsQ').textContent = s.totalMined >= 1e9 ? (s.totalMined/1e9).toFixed(2)+'B' : Math.round(s.totalMined).toLocaleString('en-US');
+      document.getElementById('lsN').textContent = 'Real blocks from real laptops — updates every 30 seconds. Register to join the network.';
+    });
+  }
+  tick(); setInterval(tick, 30000);
+})();
+</script>
+
+<div class="card rv" style="text-align:center">
+  <h3>🤖 Still stuck? AI support is coming</h3>
+  <p style="color:var(--mut)">Soon you'll be able to open a chat right here, <b>send a screenshot</b> of your problem, and our AI will guide you step by step — no customer care needed.</p>
+  <p style="color:var(--mut)">For now, email us a screenshot and we'll help:</p>
+  <a class="btn" style="font-size:15px" href="mailto:s.ghatora1979@gmail.com?subject=Quasar%20Mining%20Help&body=My%20problem%3A%20(describe%20here)%0A%0A(Attach%20a%20screenshot%20of%20your%20screen)">📧 Email a Screenshot</a>
+</div>
+<p class="cs" style="margin-top:22px">📱 <b>On a phone?</b> Real mining doesn't work from a phone browser. A mobile app is coming later.</p>
+
+<div class="race" id="race"><span class="lbl">🏁 MINING RACE — LIVE DEMO</span></div>
+<div class="term rv"><span class="tag">DEMO — for illustration only • real mining happens on your laptop</span>
+  <div class="bar"><span class="dot" style="background:#FF5F57"></span><span class="dot" style="background:#FEBC2E"></span><span class="dot" style="background:#28C840"></span></div>
+  <div id="demoChain"></div>
+</div>
+</section>
+
+<section id="demo3d" class="rv">
+<!-- Three.js must load BEFORE the 3D demos below -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+<span class="eyebrow eyebrow2">🎬 3D Demo</span>
+<h2 class="st">Watch how it works — in 3D</h2>
+<p class="cs">Blocks are mined, linked into the chain, and new coins fly into the wallet. <b>Demo speed</b> (real chain: one block every ~30 seconds). Drag to rotate, scroll to zoom.</p>
+<div class="card" style="padding:0;overflow:hidden">
+  <div id="q3d-holder" style="position:relative;width:100%;height:360px;background:#05070f;cursor:grab;touch-action:none"></div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px;align-items:center;border-top:1px solid var(--line)">
+    <span class="pill">Block <b id="q3d-h">0</b></span>
+    <span class="pill">Reward <b id="q3d-r">50,000</b> QSR</span>
+    <span class="pill">Phase <b id="q3d-p">1</b>/3</span>
+    <span class="pill">Mined <b id="q3d-m">0</b> QSR</span>
+    <button id="q3d-mine" class="btn" style="font-size:13px;padding:9px 20px;margin:0">Mine 1 block</button>
+    <button id="q3d-halv" class="btn ghost" style="font-size:13px;padding:9px 20px;margin:0">Fast-forward: halving</button>
+  </div>
+  <p id="q3d-note" class="cs" style="padding:0 14px 12px;display:none"></p>
+</div>
+<div class="card rv" style="padding:0;overflow:hidden;margin-top:16px">
+  <div id="qq-holder" style="position:relative;width:100%;height:380px;background:#03040a;cursor:grab;touch-action:none"></div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px;align-items:center;border-top:1px solid var(--line)">
+    <span class="pill">🌌 The Cosmic Quasar</span>
+    <span class="pill" style="color:var(--mut)">The brightest star — spinning live in 3D</span>
+  </div>
+  <p class="cs" style="padding:0 14px 14px">Drag to rotate · scroll to zoom. The blazing core, the swirling accretion disk, the twin jets — this is our namesake, our Founder. 🌟</p>
+</div>
+<script>
+(function(){
+var holder=document.getElementById('qq-holder');
+if(!holder||typeof THREE==='undefined')return;
+var H=380;
+var scene=new THREE.Scene(); scene.background=new THREE.Color(0x03040a);
+var camera=new THREE.PerspectiveCamera(50,holder.clientWidth/H,0.1,200);
+var renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(holder.clientWidth,H); renderer.domElement.style.display='block';
+holder.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0x334466,0.8));
+var cl=new THREE.PointLight(0xffa040,120,60); scene.add(cl);
+/* starfield */
+var sn=900,sp=new Float32Array(sn*3);
+for(var i=0;i<sn;i++){var r=60+Math.random()*60,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);
+sp[i*3]=r*Math.sin(ph)*Math.cos(th);sp[i*3+1]=r*Math.cos(ph);sp[i*3+2]=r*Math.sin(ph)*Math.sin(th);}
+var sg=new THREE.BufferGeometry(); sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0x9fb6dd,size:0.7})));
+/* quasar group (tilted) */
+var q=new THREE.Group(); q.rotation.x=0.42; q.rotation.z=0.10; scene.add(q);
+var core=new THREE.Mesh(new THREE.SphereGeometry(0.55,32,32),new THREE.MeshBasicMaterial({color:0xfff8e6}));
+q.add(core);
+function glowTex(){var c=document.createElement('canvas');c.width=c.height=128;var x=c.getContext('2d');
+var g=x.createRadialGradient(64,64,0,64,64,64);
+g.addColorStop(0,'rgba(255,244,214,1)');g.addColorStop(0.25,'rgba(255,190,110,0.85)');
+g.addColorStop(0.6,'rgba(255,120,40,0.22)');g.addColorStop(1,'rgba(255,120,40,0)');
+x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c);}
+var glow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex(),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));
+glow.scale.set(7.5,7.5,1); q.add(glow);
+/* accretion disk — 1600 particles, inner spins faster */
+var DN=1600,dp=new Float32Array(DN*3),dc=new Float32Array(DN*3),da=[],dr=[],ds=[];
+var cA=new THREE.Color(0xfff3c4),cB=new THREE.Color(0xff9a2a),cC=new THREE.Color(0xd94f04);
+for(var d=0;d<DN;d++){var rr=1.1+Math.pow(Math.random(),0.7)*4.6,aa=Math.random()*Math.PI*2;
+da.push(aa);dr.push(rr);ds.push((2.8/Math.sqrt(rr))*(0.7+Math.random()*0.6));
+dp[d*3]=Math.cos(aa)*rr;dp[d*3+1]=(Math.random()-0.5)*0.24*(rr/5);dp[d*3+2]=Math.sin(aa)*rr;
+var t=Math.min(1,(rr-1.1)/4.6),col=cA.clone().lerp(cB,Math.min(1,t*2));col.lerp(cC,Math.max(0,t*2-1));
+dc[d*3]=col.r;dc[d*3+1]=col.g;dc[d*3+2]=col.b;}
+var dg=new THREE.BufferGeometry();
+dg.setAttribute('position',new THREE.BufferAttribute(dp,3));
+dg.setAttribute('color',new THREE.BufferAttribute(dc,3));
+var disk=new THREE.Points(dg,new THREE.PointsMaterial({size:0.10,vertexColors:true,transparent:true,opacity:0.95,blending:THREE.AdditiveBlending,depthWrite:false}));
+q.add(disk);
+/* twin jets — particles streaming along ±Y */
+function makeJet(dir){
+var N=420,jp=new Float32Array(N*3),jc=new Float32Array(N*3),jd=[],js=[],jo=[],ja=[];
+var jA=new THREE.Color(0xffffff),jB=new THREE.Color(0x9fd4ff);
+for(var k=0;k<N;k++){var dd=Math.random()*13;jd.push(dd);js.push(2.5+Math.random()*3.5);
+jo.push(0.05+Math.random()*0.5);ja.push(Math.random()*Math.PI*2);}
+for(var k2=0;k2<N;k2++){var f=k2/N,col=jA.clone().lerp(jB,f);jc[k2*3]=col.r;jc[k2*3+1]=col.g;jc[k2*3+2]=col.b;}
+var jg=new THREE.BufferGeometry();
+jg.setAttribute('position',new THREE.BufferAttribute(jp,3));
+jg.setAttribute('color',new THREE.BufferAttribute(jc,3));
+var pts=new THREE.Points(jg,new THREE.PointsMaterial({size:0.14,vertexColors:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}));
+q.add(pts);
+return {pts:pts,jp:jp,jd:jd,js:js,jo:jo,ja:ja,dir:dir,geo:jg};}
+var jets=[makeJet(1),makeJet(-1)];
+/* bright jet cores */
+var jetMat=new THREE.MeshBasicMaterial({color:0xcfeaff,transparent:true,opacity:0.55,blending:THREE.AdditiveBlending,depthWrite:false});
+var jc1=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.16,13,12,1,true),jetMat); jc1.position.y=6.8; q.add(jc1);
+var jc2=jc1.clone(); jc2.position.y=-6.8; q.add(jc2);
+/* ---- GOLD Q-COINS streaming up & down the jets ---- */
+function qCoinTexture(){var c=document.createElement('canvas');c.width=c.height=128;var x=c.getContext('2d');
+var g=x.createRadialGradient(64,64,6,64,64,64);
+g.addColorStop(0,'#fff7c9');g.addColorStop(0.45,'#ffd94d');g.addColorStop(0.8,'#e8a412');g.addColorStop(1,'#a86e04');
+x.fillStyle=g;x.beginPath();x.arc(64,64,62,0,7);x.fill();
+x.strokeStyle='#8a5a00';x.lineWidth=7;x.beginPath();x.arc(64,64,55,0,7);x.stroke();
+x.fillStyle='#7a4d00';x.font='900 74px Poppins,Arial,sans-serif';x.textAlign='center';x.textBaseline='middle';
+x.fillText('Q',64,69);return new THREE.CanvasTexture(c);}
+var qTex=qCoinTexture();
+var coinSide=new THREE.MeshBasicMaterial({color:0xd99a16});
+var coinFace=new THREE.MeshBasicMaterial({map:qTex});
+var coinGeo=new THREE.CylinderGeometry(0.34,0.34,0.07,24);
+var coins=[];
+for(var ci=0;ci<44;ci++){var cdir=ci%2===0?1:-1;
+var cm=new THREE.Mesh(coinGeo,[coinSide,coinFace,coinFace]);
+var cdist=0.8+Math.random()*12;
+cm.position.set((Math.random()-0.5)*1.4,cdir*cdist,(Math.random()-0.5)*1.4);
+cm.rotation.set(Math.random()*3.14,Math.random()*3.14,Math.random()*3.14);
+q.add(cm);
+coins.push({m:cm,dir:cdir,dist:cdist,spd:2.0+Math.random()*3.0,
+rx:(Math.random()-0.5)*5,ry:(Math.random()-0.5)*5,wob:Math.random()*6.28,wa:0.15+Math.random()*0.4});}
+/* ---- soft blur-ray halo sprites (slow rotating) ---- */
+function rayTex(){var c=document.createElement('canvas');c.width=64;c.height=256;var x=c.getContext('2d');
+var g=x.createLinearGradient(0,0,0,256);
+g.addColorStop(0,'rgba(255,220,130,0)');g.addColorStop(0.5,'rgba(255,200,100,0.55)');g.addColorStop(1,'rgba(255,220,130,0)');
+x.fillStyle=g;x.fillRect(0,0,64,256);return new THREE.CanvasTexture(c);}
+var rTex=rayTex(),rays=[];
+for(var ri=0;ri<6;ri++){var rs=new THREE.Sprite(new THREE.SpriteMaterial({map:rTex,transparent:true,opacity:0.35,blending:THREE.AdditiveBlending,depthWrite:false}));
+rs.scale.set(3.2,16,1);rs.position.y=ri%2===0?7:-7;var ra=ri*Math.PI/3;rs.material.rotation=ra;
+q.add(rs);rays.push({s:rs,a:ra,dir:ri%2===0?1:-1});}
+/* controls */
+var theta=0.6,phi=1.1,radius=17,drag=false,px=0,py=0;
+holder.addEventListener('pointerdown',function(e){drag=true;px=e.clientX;py=e.clientY;holder.style.cursor='grabbing';});
+window.addEventListener('pointerup',function(){drag=false;holder.style.cursor='grab';});
+window.addEventListener('pointermove',function(e){if(!drag)return;theta-=(e.clientX-px)*0.005;phi-=(e.clientY-py)*0.003;
+phi=Math.max(0.35,Math.min(1.4,phi));px=e.clientX;py=e.clientY;});
+holder.addEventListener('wheel',function(e){e.preventDefault();radius=Math.max(9,Math.min(34,radius+e.deltaY*0.02));},{passive:false});
+window.addEventListener('resize',function(){var w=holder.clientWidth;camera.aspect=w/H;camera.updateProjectionMatrix();renderer.setSize(w,H);});
+var clock=new THREE.Clock(),t=0;
+(function tick(){requestAnimationFrame(tick);var dt=Math.min(clock.getDelta(),0.1);t+=dt;
+/* disk spin */
+var pa=dg.attributes.position.array;
+for(var d2=0;d2<DN;d2++){da[d2]+=ds[d2]*dt;var rr2=dr[d2];
+pa[d2*3]=Math.cos(da[d2])*rr2;pa[d2*3+2]=Math.sin(da[d2])*rr2;}
+dg.attributes.position.needsUpdate=true;
+/* jets */
+for(var j=0;j<2;j++){var J=jets[j],arr=J.geo.attributes.position.array;
+for(var k3=0;k3<J.jd.length;k3++){J.jd[k3]+=J.js[k3]*dt;if(J.jd[k3]>13){J.jd[k3]=0.3;J.ja[k3]=Math.random()*Math.PI*2;}
+var wob=J.jo[k3]*(0.4+J.jd[k3]*0.16);
+arr[k3*3]=Math.cos(J.ja[k3]+t*2)*wob;arr[k3*3+1]=J.dir*J.jd[k3];arr[k3*3+2]=Math.sin(J.ja[k3]+t*2)*wob;}
+J.geo.attributes.position.needsUpdate=true;}
+/* pulse */
+var p=1+Math.sin(t*3)*0.06;core.scale.set(p,p,p);glow.scale.set(7.5*p,7.5*p,1);
+jetMat.opacity=0.45+Math.sin(t*5)*0.12;
+/* gold coins fly */
+for(var cci=0;cci<coins.length;cci++){var C=coins[cci];
+C.dist+=C.spd*dt;if(C.dist>13.5){C.dist=0.8;C.wob=Math.random()*6.28;}
+C.wob+=dt*1.6;
+C.m.position.y=C.dir*C.dist;
+C.m.position.x=Math.cos(C.wob)*C.wa*(0.4+C.dist*0.12);
+C.m.position.z=Math.sin(C.wob)*C.wa*(0.4+C.dist*0.12);
+C.m.rotation.x+=C.rx*dt;C.m.rotation.y+=C.ry*dt;
+var cf=Math.min(1,(13.5-C.dist)/2.5)*Math.min(1,(C.dist-0.6)/1.4+0.25);
+var cs2=Math.max(0.01,cf);C.m.scale.set(cs2,cs2,cs2);}
+/* blur rays breathe & rotate */
+for(var rri=0;rri<rays.length;rri++){var R=rays[rri];
+R.a+=dt*0.12*R.dir;R.s.material.rotation=R.a;
+R.s.material.opacity=0.28+Math.sin(t*2.2+rri)*0.12;}
+q.rotation.y+=dt*0.06;
+camera.position.set(radius*Math.sin(theta)*Math.sin(phi),radius*Math.cos(phi),radius*Math.cos(theta)*Math.sin(phi));
+camera.lookAt(0,0.4,0);renderer.render(scene,camera);})();
+})();
+</script>
+<script>
+(function(){
+"use strict";
+if (typeof THREE === "undefined") return;
+var REWARDS=[50000,25000,12500], phase=0, stopped=false, nBlocks=0, mined=0;
+var holder=document.getElementById('q3d-holder');
+var scene=new THREE.Scene(); scene.background=new THREE.Color(0x05070f); scene.fog=new THREE.Fog(0x05070f,20,46);
+var camera=new THREE.PerspectiveCamera(50,holder.clientWidth/360,0.1,120);
+var renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(holder.clientWidth,360); renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+holder.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0x8899bb,0.7));
+var dl=new THREE.DirectionalLight(0xffffff,1.1); dl.position.set(6,10,6); scene.add(dl);
+var gold=new THREE.PointLight(0xffc861,60,30); gold.position.set(-8,4,3); scene.add(gold);
+var grid=new THREE.GridHelper(80,40,0x223355,0x101a30); grid.position.y=-1.6; scene.add(grid);
+var sp=[]; for(var i=0;i<400;i++) sp.push((Math.random()-0.5)*90,Math.random()*30-2,(Math.random()-0.5)*90);
+var sg=new THREE.BufferGeometry(); sg.setAttribute('position',new THREE.Float32BufferAttribute(sp,3));
+scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xaabbdd,size:0.12})));
+function label(text,fg){var c=document.createElement('canvas');c.width=256;c.height=128;var x=c.getContext('2d');
+x.fillStyle='rgba(6,10,22,0.88)';x.fillRect(0,0,256,128);x.strokeStyle='#ffc861';x.lineWidth=5;x.strokeRect(6,6,244,116);
+x.fillStyle=fg||'#ffe9c4';x.font='bold 46px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(text,128,66);
+var s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));
+s.scale.set(2.4,1.2,1);return s;}
+var wallet=new THREE.Group();
+var wbox=new THREE.Mesh(new THREE.BoxGeometry(2.6,2.6,2.6),new THREE.MeshStandardMaterial({color:0x8a6a2a,metalness:0.9,roughness:0.3,emissive:0x664400,emissiveIntensity:0.7}));
+wallet.add(wbox); var wl=label('WALLET'); wl.position.y=2.4; wallet.add(wl);
+wallet.position.set(-9,0.4,0); scene.add(wallet);
+var blocks=[],coins=[];
+function bx(n){return n*3.0-4;}
+function note(t){var el=document.getElementById('q3d-note');el.textContent=t;el.style.display='block';clearTimeout(note._t);note._t=setTimeout(function(){el.style.display='none';},5000);}
+function hud(){document.getElementById('q3d-h').textContent=nBlocks;
+document.getElementById('q3d-r').textContent=(stopped?0:REWARDS[phase]).toLocaleString('en-US');
+document.getElementById('q3d-p').textContent=stopped?'done':(phase+1);
+document.getElementById('q3d-m').textContent=mined.toLocaleString('en-US');}
+function mine(){ if(stopped) return; var reward=REWARDS[phase]; nBlocks++; mined+=reward;
+var g=new THREE.Group();
+var mat=new THREE.MeshStandardMaterial({color:0x1d2c52,metalness:0.75,roughness:0.35,emissive:0x2a4a8a,emissiveIntensity:0.9});
+var m=new THREE.Mesh(new THREE.BoxGeometry(1.7,1.7,1.7),mat);
+g.add(m); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),new THREE.LineBasicMaterial({color:0xffc861})));
+var lb=label('#'+nBlocks); lb.position.y=1.6; g.add(lb);
+var lr=label(reward.toLocaleString('en-US'),'#9fe8ff'); lr.scale.set(2.0,1.0,1); lr.position.y=-1.5; g.add(lr);
+g.position.set(bx(nBlocks),7,0); g.scale.set(0.4,0.4,0.4); scene.add(g); blocks.push({g:g,mat:mat,t:0});
+if(blocks.length>1){var pv=blocks[blocks.length-2].g.position;
+var link=new THREE.Mesh(new THREE.BoxGeometry(1.3,0.18,0.18),new THREE.MeshStandardMaterial({color:0xffc861,emissive:0xff9a2a,emissiveIntensity:0.8}));
+link.position.set((pv.x+g.position.x)/2,0,0); scene.add(link); blocks[blocks.length-1].link=link;}
+for(var k=0;k<6;k++){var cm=new THREE.Mesh(new THREE.SphereGeometry(0.14,12,12),new THREE.MeshStandardMaterial({color:0xffc861,metalness:1,roughness:0.2,emissive:0xaa6600,emissiveIntensity:0.6}));
+scene.add(cm); coins.push({m:cm,from:g.position.clone(),to:new THREE.Vector3(wallet.position.x,0.4,0),t:-k*0.12,dur:1.4});}
+var cut=bx(nBlocks)-30; while(blocks.length&&blocks[0].g.position.x<cut){var o=blocks.shift();scene.remove(o.g);if(o.link)scene.remove(o.link);}
+hud(); note('Block #'+nBlocks+' mined — '+reward.toLocaleString('en-US')+' QSR created to the miner wallet.');}
+document.getElementById('q3d-mine').onclick=mine;
+document.getElementById('q3d-halv').onclick=function(){ if(phase<2){phase++;hud();note('HALVING — demo fast-forward (real Phase 1 lasts ~5.7 years). Reward now '+REWARDS[phase].toLocaleString('en-US')+' QSR/block.');}
+else if(!stopped){stopped=true;hud();note('STOP — schedule complete. Total ever mined: 398,617,500,000 QSR. No more coins can ever be created.');}};
+var theta=0.5,phi=1.05,radius=17,targetX=-2,drag=false,px=0,py=0;
+holder.addEventListener('pointerdown',function(e){drag=true;px=e.clientX;py=e.clientY;holder.style.cursor='grabbing';});
+window.addEventListener('pointerup',function(){drag=false;holder.style.cursor='grab';});
+window.addEventListener('pointermove',function(e){if(!drag)return;theta-=(e.clientX-px)*0.005;phi-=(e.clientY-py)*0.003;phi=Math.max(0.35,Math.min(1.35,phi));px=e.clientX;py=e.clientY;});
+holder.addEventListener('wheel',function(e){e.preventDefault();radius=Math.max(8,Math.min(34,radius+e.deltaY*0.02));},{passive:false});
+var clock=new THREE.Clock(),acc=0;
+(function tick(){requestAnimationFrame(tick);var dt=Math.min(clock.getDelta(),0.1);acc+=dt;
+if(!stopped&&acc>4){acc=0;mine();}
+for(var i=blocks.length-1;i>=0;i--){var b=blocks[i];if(b.t<1){b.t=Math.min(1,b.t+dt*1.4);var e2=1-Math.pow(1-b.t,3);b.g.position.y=7*(1-e2);var s=0.4+0.6*e2;b.g.scale.set(s,s,s);b.mat.emissiveIntensity=0.9*(1-b.t)+0.12;}}
+for(var j=coins.length-1;j>=0;j--){var c=coins[j];c.t+=dt/c.dur;if(c.t<0)continue;
+if(c.t>=1){scene.remove(c.m);coins.splice(j,1);wbox.scale.set(1.25,1.25,1.25);setTimeout(function(){wbox.scale.set(1,1,1);},120);continue;}
+var p=c.from.clone().lerp(c.to,c.t);p.y+=Math.sin(c.t*Math.PI)*2.2;c.m.position.copy(p);}
+if(blocks.length)targetX+=((blocks[blocks.length-1].g.position.x-3)-targetX)*Math.min(1,dt*2);
+wallet.position.x+=((targetX-9)-wallet.position.x)*Math.min(1,dt*2); gold.position.x=wallet.position.x;
+camera.position.set(targetX+radius*Math.sin(theta)*Math.sin(phi),radius*Math.cos(phi),radius*Math.cos(theta)*Math.sin(phi));
+camera.lookAt(targetX,0.4,0); renderer.render(scene,camera);})();
+hud();
+})();
+</script>
+</section>
+
+<section id="wallet" class="rv">
+<span class="eyebrow eyebrow2">👛 Wallet</span>
+<h2 class="st">Your vault, your key</h2>
+<p class="cs">A wallet means — your coins under your control.</p>
+<div class="grid3">
+  <div class="card"><h3>🔑 24-word phrase</h3><p style="color:var(--mut)">You get 24 words when your wallet is created. Write them on paper and <b>hide it</b> — anyone who knows them can take your coins!</p></div>
+  <div class="card"><h3>👆 Face ID / Fingerprint</h3><p style="color:var(--mut)">In the mobile app, your wallet will open with your finger or face. (App in phase 2.)</p></div>
+  <div class="card"><h3>🛡️ 2-step / 3-step lock</h3><p style="color:var(--mut)">Your choice — on or off. Your password can be changed via email.</p></div>
+</div>
+</section>
+
+<section id="bhejo" class="rv">
+<span class="eyebrow eyebrow2">💸 Transfer</span>
+<h2 class="st">Send with no exchange</h2>
+<p class="cs">You need <b>no exchange</b> to send coins to a friend — just their address.</p>
+<div class="card">
+  <div class="grid3">
+    <div><div class="big pf" style="font-size:44px;font-weight:900;color:var(--o1)">1</div><p><b>Ask for the address</b><br><span style="color:var(--mut)">Get your friend's Quasar address (starts with QU...).</span></p></div>
+    <div><div class="big pf" style="font-size:44px;font-weight:900;color:var(--o1)">2</div><p><b>Send</b><br><code class="cmd">send founder QU&lt;address&gt; 1000</code></p></div>
+    <div><div class="big pf" style="font-size:44px;font-weight:900;color:var(--o1)">3</div><p><b>Delivered ✅</b><br><span style="color:var(--mut)">Confirmed in the next block. Your friend will see it in their balance.</span></p></div>
+  </div>
+</div>
+</section>
+
+<section id="exchange" class="rv">
+<span class="eyebrow eyebrow2">📈 Exchange</span>
+<h2 class="st">Quasar Exchange — our own marketplace</h2>
+<p class="cs">One day you'll trade QSR on our own exchange. It's under development — explore the demo interface today.</p>
+<div class="card rv" style="text-align:center">
+  <h3>🚧 Launching after the coin goes live</h3>
+  <p style="color:var(--mut)">The exchange you see today is a <b>demo preview</b> — real trading opens after launch. Mining, wallets and the coin come first.</p>
+  <a class="btn" style="font-size:15px" href="https://quasar-exchange.vercel.app" target="_blank" rel="noopener">👀 Try the Exchange Demo</a>
+  <p class="cs" style="margin-top:10px">Roadmap: coin launch → community mining → exchange listing → open trading.</p>
+</div>
+</section>
+
+<section id="join" class="rv">
+<span class="eyebrow eyebrow2">📝 Join</span>
+<h2 class="st">Get updates first</h2>
+<p class="cs">Leave your name and email — news comes straight to you.</p>
+<div class="card" style="max-width:560px;margin:auto">
+<form class="reg" onsubmit="return doRegister(event)">
+  <input id="rname" placeholder="Your name" required>
+  <input id="remail" type="email" placeholder="Email" required>
+  <input id="rphone" placeholder="Mobile number">
+  <button class="btn" type="submit" style="width:100%;border:none;cursor:pointer">Register</button>
+</form>
+<p style="color:var(--mut);font-size:13.5px;margin-top:10px">Tapping the button opens a draft in your email app — just press Send. OTP-based auto-registration comes in phase 2.</p>
+</div>
+</section>
+
+<section id="faq" class="faq rv">
+<span class="eyebrow eyebrow2">❓ FAQ</span>
+<h2 class="st">Frequently asked questions</h2>
+<p class="cs"></p>
+<details><summary>What is halving?</summary><p>Halving means the mining reward gets cut in half. Quasar pays a flat <b>50,000 QSR</b> per block for the first ~5.7 years (300B coins). Then it halves to <b>25,000</b> for 2.5 years, then <b>12,500</b> for 2.5 years — then mining stops. Early miners earn more; late joiners earn less. That's the deal, written in code.</p></details>
+<details><summary>When will it come to an exchange?</summary><p>When millions use it and real demand exists, exchanges will list it themselves. First the network, then demand, then listing.</p></details>
+<details><summary>How will the coin get value?</summary><p>Value is born the day someone first trades something real for the coin. An exchange doesn't create price — it only displays it. People create price when they trade.</p></details>
+<details><summary>Is this real money?</summary><p><b>No!</b> This is a testnet — practice coins. They are worth nothing. If anyone asks you for money in their name, it's a scam.</p></details>
+<details><summary>Will my laptop overheat?</summary><p>Keep it on a hard table (not on the bed), plugged in. If it gets too hot the laptop protects itself — it won't catch fire. 😊</p></details>
+<details><summary>Can I mine from my phone?</summary><p>Not yet — real mining happens with the laptop program. A mobile app is coming in phase 3.</p></details>
+</section>
+
+<section id="share" class="rv" style="text-align:center">
+<span class="eyebrow eyebrow2">📣 Share</span>
+<h2 class="st">Spread the word</h2>
+<p class="cs">Tell your friends about Quasar Coin — one tap to share.</p>
+<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:640px;margin:18px auto 0">
+  <button class="btn" style="border:none;cursor:pointer" data-share="whatsapp">💬 WhatsApp</button>
+  <button class="btn" style="border:none;cursor:pointer" data-share="telegram">✈️ Telegram</button>
+  <button class="btn" style="border:none;cursor:pointer" data-share="facebook">📘 Facebook</button>
+  <button class="btn ghost" style="cursor:pointer" data-share="instagram">📸 Instagram</button>
+  <button class="btn ghost" style="cursor:pointer" data-share="tiktok">🎵 TikTok</button>
+  <button class="btn ghost" style="cursor:pointer" data-share="youtube">▶️ YouTube</button>
+  <button class="btn ghost" style="cursor:pointer" data-share="copy">🔗 Copy Link</button>
+  <button class="btn ghost" style="cursor:pointer;display:none" id="nativeShareBtn">📤 More…</button>
+</div>
+<p id="shareNote" style="color:var(--mut);font-size:13.5px;margin-top:12px;min-height:20px"></p>
+</section>
+
+<script>
+(function(){
+  var url = window.location.href.split('#')[0];
+  var text = "Quasar Coin (QSR) — Mine it. Send it. Grow it. ⛏️";
+  var eu = encodeURIComponent(url), et = encodeURIComponent(text);
+  function note(m){ var n=document.getElementById('shareNote'); if(n) n.textContent=m; }
+  function copyLink(msg){
+    function done(){ note(msg || "✅ Link copied! Paste it anywhere."); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(done).catch(function(){ fallback(); });
+    } else fallback();
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta);
+      ta.select(); try{ document.execCommand('copy'); done(); }catch(e){ note("Copy this link: "+url); }
+      document.body.removeChild(ta);
+    }
+  }
+  var handlers={
+    whatsapp:function(){ window.open("https://wa.me/?text="+et+"%20"+eu,"_blank"); },
+    telegram:function(){ window.open("https://t.me/share/url?url="+eu+"&text="+et,"_blank"); },
+    facebook:function(){ window.open("https://www.facebook.com/sharer/sharer.php?u="+eu,"_blank"); },
+    instagram:function(){ copyLink("✅ Link copied! Paste it in your Instagram bio, story or DM."); },
+    tiktok:function(){ copyLink("✅ Link copied! Paste it in your TikTok bio or video description."); },
+    youtube:function(){ copyLink("✅ Link copied! Paste it in your YouTube video description or comment."); },
+    copy:function(){ copyLink(); }
+  };
+  document.querySelectorAll('[data-share]').forEach(function(b){
+    b.addEventListener('click',function(){ var h=handlers[b.getAttribute('data-share')]; if(h) h(); });
+  });
+  // Native share sheet on phones (WhatsApp/Instagram/etc. apps)
+  var nb=document.getElementById('nativeShareBtn');
+  if(nb && navigator.share){
+    nb.style.display='inline-block';
+    nb.addEventListener('click',function(){
+      navigator.share({title:document.title,text:text,url:url}).catch(function(){});
+    });
+  }
+})();
+</script>
+
+<footer>◉ QUASAR COIN (QSR) — Testnet<br>Test coins only. No real value.</footer>
+
+<script>
+// runners
+const kids=['🏃‍♂️','🏃‍♀️','🏃','🚶‍♂️'];const rw=document.getElementById('race');
+kids.forEach((k,i)=>{const s=document.createElement('span');s.className='runner';s.textContent=k;
+s.style.animationDuration=(6+i*2.3)+'s';s.style.animationDelay=(i*1.4)+'s';s.style.bottom=(16+i*10)+'px';rw.appendChild(s);
+for(let j=0;j<3;j++){const c=document.createElement('span');c.className='coinfall';c.textContent='🪙';
+c.style.left=(5+Math.random()*90)+'%';c.style.animationDuration=(2+Math.random()*2)+'s';c.style.animationDelay=(Math.random()*3)+'s';rw.appendChild(c)}});
+// demo chain
+let bn=10420;const dc=document.getElementById('demoChain');
+setInterval(()=>{bn++;const d=document.createElement('div');d.className='blk';
+d.innerHTML='Block <b>#'+bn+'</b> • <b>50,000</b> QSR • now';dc.prepend(d);
+while(dc.children.length>7)dc.lastChild.remove()},3000);
+// count-up stats
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;io.unobserve(e.target);
+const el=e.target,end=+el.dataset.count,t0=performance.now();
+(function tick(t){const p=Math.min(1,(t-t0)/1400),v=Math.round(end*(1-Math.pow(1-p,3)));
+el.textContent=v.toLocaleString('en-US');if(p<1)requestAnimationFrame(tick)})(t0)}),{threshold:.4});
+document.querySelectorAll('[data-count]').forEach(el=>io.observe(el));
+// reveal on scroll
+const io2=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io2.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io2.observe(el));
+// register via email draft
+function doRegister(e){e.preventDefault();
+const n=document.getElementById('rname').value,p=document.getElementById('rphone').value,em=document.getElementById('remail').value;
+location.href='mailto:s.ghatora1979@gmail.com?subject='+encodeURIComponent('Quasar Coin Registration — '+n)
++'&body='+encodeURIComponent('Name: '+n+'\nEmail: '+em+'\nPhone: '+p+'\n\nI want Quasar Coin updates.');
+return false}
+</script>
+
+<button id="chatfab" onclick="toggleChat()" aria-label="Open help chat">💬</button>
+<div id="chatpanel">
+  <div class="chead"><span class="onlinedot"></span>
+    <div><b>Quasar Help Bot</b><div style="font-size:12px;opacity:.92">Automatic helper • replies instantly</div></div>
+    <button onclick="toggleChat()" style="margin-left:auto;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;line-height:1">×</button>
+  </div>
+  <div id="chatbody"></div>
+  <div class="cinput"><input id="chatin" placeholder="Where are you stuck?" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()" aria-label="Send">➤</button></div>
+</div>
+
+<script src="quasar-bot.js"></script>
+<script>
+/* ---- HERO: full 3D spinning gold Q-coin, quasar style ---- */
+(function(){
+try{
+var holder=document.getElementById('hero-coin');
+if(!holder||typeof THREE==='undefined')throw 0;
+var W=holder.clientWidth||560,H=Math.round(Math.min(400,W*0.72));
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(38,W/H,0.1,100);
+camera.position.set(0,0.7,8.4);camera.lookAt(0,0,0);
+var renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+holder.appendChild(renderer.domElement);
+
+var G=new THREE.Group();scene.add(G);
+/* coin face texture */
+function heroQTex(){var c=document.createElement('canvas');c.width=c.height=256;var x=c.getContext('2d');
+var g=x.createRadialGradient(128,128,8,128,128,128);
+g.addColorStop(0,'#fff9d6');g.addColorStop(0.42,'#ffd94d');g.addColorStop(0.78,'#efa91a');g.addColorStop(1,'#a86e04');
+x.fillStyle=g;x.beginPath();x.arc(128,128,126,0,7);x.fill();
+x.strokeStyle='rgba(122,77,0,.9)';x.lineWidth=6;x.beginPath();x.arc(128,128,110,0,7);x.stroke();
+x.strokeStyle='rgba(255,248,214,.75)';x.lineWidth=2;x.beginPath();x.arc(128,128,100,0,7);x.stroke();
+x.fillStyle='rgba(255,255,255,.95)';
+var st=[[70,60],[190,70],[60,180],[200,190],[128,42],[42,128]];
+for(var i=0;i<st.length;i++){x.beginPath();x.arc(st[i][0],st[i][1],3.5,0,7);x.fill();}
+x.fillStyle='#7a4d00';x.font='900 148px Poppins,Arial,sans-serif';x.textAlign='center';x.textBaseline='middle';
+x.fillText('Q',128,142);
+var t=new THREE.CanvasTexture(c);t.anisotropy=4;return t;}
+var hq=heroQTex();
+var coin=new THREE.Mesh(new THREE.CylinderGeometry(2.05,2.05,0.3,72),
+ [new THREE.MeshBasicMaterial({color:0xcf9416}),
+  new THREE.MeshBasicMaterial({map:hq}),
+  new THREE.MeshBasicMaterial({map:hq})]);
+coin.rotation.x=Math.PI/2;G.add(coin);
+var edge=new THREE.Mesh(new THREE.TorusGeometry(2.05,0.06,12,90),
+ new THREE.MeshBasicMaterial({color:0xa86e04}));
+G.add(edge);
+/* glow behind */
+function glowTex(){var c=document.createElement('canvas');c.width=c.height=128;var x=c.getContext('2d');
+var g=x.createRadialGradient(64,64,2,64,64,64);
+g.addColorStop(0,'rgba(255,214,110,.85)');g.addColorStop(0.4,'rgba(255,170,60,.30)');g.addColorStop(1,'rgba(255,160,50,0)');
+x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c);}
+var glow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex(),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+glow.scale.set(11,11,1);glow.position.z=-1.4;scene.add(glow);
+/* quasar sparkle ring (tilted) */
+var tilt=new THREE.Group();tilt.rotation.x=1.12;scene.add(tilt);
+var N=150,pos=new Float32Array(N*3),col=new Float32Array(N*3);
+var pal=[[1,0.85,0.35],[1,0.95,0.8],[1,0.62,0.2],[0.62,0.83,1]];
+for(var i=0;i<N;i++){var a=Math.random()*Math.PI*2,r=2.75+Math.random()*1.7;
+pos[i*3]=Math.cos(a)*r;pos[i*3+1]=0;pos[i*3+2]=Math.sin(a)*r;
+var cc=pal[i%4];col[i*3]=cc[0];col[i*3+1]=cc[1];col[i*3+2]=cc[2];}
+var rg=new THREE.BufferGeometry();
+rg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+rg.setAttribute('color',new THREE.BufferAttribute(col,3));
+var ringPts=new THREE.Points(rg,new THREE.PointsMaterial({size:0.15,vertexColors:true,transparent:true,
+ opacity:0.95,blending:THREE.AdditiveBlending,depthWrite:false}));
+tilt.add(ringPts);
+var halo=new THREE.Mesh(new THREE.TorusGeometry(3.2,0.035,8,120),
+ new THREE.MeshBasicMaterial({color:0xffc95e,transparent:true,opacity:0.5,blending:THREE.AdditiveBlending,depthWrite:false}));
+halo.rotation.x=Math.PI/2;tilt.add(halo);
+/* rising embers */
+var M=40,ep=new Float32Array(M*3);
+for(var e=0;e<M;e++){ep[e*3]=(Math.random()-0.5)*7;ep[e*3+1]=-3+Math.random()*6;ep[e*3+2]=-1-Math.random()*2;}
+var eg=new THREE.BufferGeometry();eg.setAttribute('position',new THREE.BufferAttribute(ep,3));
+var embers=new THREE.Points(eg,new THREE.PointsMaterial({size:0.09,color:0xffd98a,transparent:true,
+ opacity:0.8,blending:THREE.AdditiveBlending,depthWrite:false}));
+scene.add(embers);
+
+var clock=new THREE.Clock();
+(function tick(){
+var dt=Math.min(clock.getDelta(),0.05),t=clock.elapsedTime;
+G.rotation.y=Math.sin(t*0.55)*0.38;           /* gentle sway — Q stays straight & readable */
+G.rotation.x=0.16+Math.sin(t*0.8)*0.07;       /* gentle wobble */
+G.position.y=Math.sin(t*1.1)*0.16;            /* float, stays in place */
+ringPts.rotation.y+=dt*0.4;                   /* quasar ring orbits */
+halo.material.opacity=0.38+Math.sin(t*2.2)*0.16;
+var gp=1+Math.sin(t*2.4)*0.08;glow.scale.set(11*gp,11*gp,1);
+var arr=eg.attributes.position.array;
+for(var k=0;k<M;k++){arr[k*3+1]+=dt*0.7;if(arr[k*3+1]>3.4){arr[k*3+1]=-3.2;arr[k*3]=(Math.random()-0.5)*7;}}
+eg.attributes.position.needsUpdate=true;
+renderer.render(scene,camera);
+requestAnimationFrame(tick);})();
+
+window.addEventListener('resize',function(){
+var w2=holder.clientWidth||560,h2=Math.round(Math.min(400,w2*0.72));
+camera.aspect=w2/h2;camera.updateProjectionMatrix();renderer.setSize(w2,h2);});
+}catch(err){
+var h=document.getElementById('hero-coin');
+if(h)h.innerHTML='<img src="quasar-coin-art.jpg" alt="Quasar Coin (QSR)" style="width:100%;border-radius:28px;display:block">';
+}
+})();
+</script>
+</body>
+</html>
